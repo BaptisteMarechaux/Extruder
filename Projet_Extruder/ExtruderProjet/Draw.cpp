@@ -6,7 +6,7 @@
 #include <cstdint>
 #include "GL/freeglut.h"
 #include <iostream>
-#include "libs\glm\glm.hpp"
+#include "glm\glm.hpp"
 
 // Pour les fonctions
 #include "Draw.h"
@@ -89,7 +89,7 @@ int modifierType = 0;
 
 int index = 0;
 
-void Initialize() 
+void InitializeDraw() 
 {
 	std::cout << sin(1);
 	std::cout << sin(1.0);
@@ -113,7 +113,7 @@ void Initialize()
 }
 
 // Rendu des formes dans la fenêtre
-void Render()
+void RenderDraw()
 {
 	// Nettoyage de la fenêtre
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -669,7 +669,7 @@ void option_menu(int option) {
 		}
 		curves.clear();
 		currentCurve = 0;
-		Initialize();
+		InitializeDraw();
 		indexPolyMode = 3;
 		mode = 0;
 		break;

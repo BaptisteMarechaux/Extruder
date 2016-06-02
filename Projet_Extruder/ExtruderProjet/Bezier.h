@@ -1,5 +1,5 @@
 #pragma once
-#include "libs\glm\glm.hpp"
+#include "glm\glm.hpp"
 #include <vector>
 #include <iostream>
 #include "Draw.h"

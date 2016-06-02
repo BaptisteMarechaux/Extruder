@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "Bezier.h"
-#include "libs\glm\glm.hpp"
+#include "glm\glm.hpp"
 
 using std::vector;
 
