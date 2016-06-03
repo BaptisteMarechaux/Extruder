@@ -4,7 +4,7 @@
 #include <cstdio>
 // C, standard, int
 #include <cstdint>
-#include "GL/freeglut.h"
+#include "libs\freeglut\include\GL\freeglut.h"
 #include <iostream>
 #include "libs\glm\glm.hpp"
 
@@ -73,7 +73,7 @@ color purpleColor = { 0.75f, 0.0f, 0.75f };
 
 Bezier b = Bezier();
 
-vector<glm::vec2> casPoints = vector<glm::vec2>();
+vector<glm::vec3> casPoints = vector<glm::vec3>();
 
 
 float tMatrix[16] = { 1,0,0,10, 0,1,0,10, 0,0,1,10, 0,0,0,10 };
@@ -124,7 +124,7 @@ void Render()
 		for (int p = 0; p < curves.size(); p++)
 		{
 			if (curves[p].controlPoints.size() >= 4) {
-				glm::vec2 v = glm::vec2(0, 0);
+				glm::vec3 v = glm::vec3(0, 0, 0);
 				curves[p].curvePoints = b.CasteljauBezier(curves[p].controlPoints, nStep, currentParameterSpace);
 			}
 
@@ -223,7 +223,7 @@ void mouse(int button, int state, int x, int y)
 		mousex = x;
 		mousey = y;
 		std::cout << x << " " << y << "\n";
-		vec2 tmpPoint;
+		vec3 tmpPoint;
 		tmpPoint.x = mousex;
 		tmpPoint.y = mousey;
 		if (mode == 1) {

@@ -8,15 +8,15 @@ using std::vector;
 
 class CurveObject {
 	public:
-		vector<glm::vec2> controlPoints;
-		vector<glm::vec2> curvePoints;
-		vector<vector<glm::vec2>> splineControlPoints;
-		vector<vector<glm::vec2>> splineCurvePoints;
+		vector<glm::vec3> controlPoints;
+		vector<glm::vec3> curvePoints;
+		vector<vector<glm::vec3>> splineControlPoints;
+		vector<vector<glm::vec3>> splineCurvePoints;
 		vector<int> paramPoints;
 
 		CurveObject() {
-			controlPoints = vector<glm::vec2>();
-			curvePoints = vector<glm::vec2>();
+			controlPoints = vector<glm::vec3>();
+			curvePoints = vector<glm::vec3>();
 		}
 };
 

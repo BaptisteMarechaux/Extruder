@@ -11,14 +11,14 @@ Bezier::~Bezier()
 {
 }
 
-std::vector<vec2> Bezier::GetControlPoints() const
+std::vector<vec3> Bezier::GetControlPoints() const
 {
 	return controlPoints;
 }
 
-std::vector<vec2> Bezier::Curve(float step, float min, float max, vec2 p1, vec2 p2, vec2 p3, vec2 p4)
+std::vector<vec3> Bezier::Curve(float step, float min, float max, vec3 p1, vec3 p2, vec3 p3, vec3 p4)
 {
-	std::vector<vec2> points = std::vector<vec2>();
+	std::vector<vec3> points = std::vector<vec3>();
 
 	//points.push_back(p1);
 	std::cout << "Starting Bezier" << std::endl;
@@ -31,7 +31,7 @@ std::vector<vec2> Bezier::Curve(float step, float min, float max, vec2 p1, vec2 
 		float y = pow(1 - t, 3)*p1.y + 3 * t*pow(1 - t, 2)*p2.y + 3 * pow(t, 2)*(1 - t)*p3.y + pow(t, 3)*p4.y;
 
 		std::cout << "X : " << x << " Y : " << y << std::endl;
-		points.push_back(vec2(x, y));
+		points.push_back(vec3(x, y, 0));
 
 	}
 
@@ -41,14 +41,14 @@ std::vector<vec2> Bezier::Curve(float step, float min, float max, vec2 p1, vec2 
 	return points;
 }
 
-vec2 Bezier::Casteljau(std::vector<vec2> points, float step)
+vec3 Bezier::Casteljau(std::vector<vec3> points, float step)
 {
 	if (points.size() == 1) {
 		std::cout << "X : " << points[0].x << " Y : " << points[0].y << std::endl;
 		return points[0];
 	}
 		
-	std::vector<vec2> newPoints;
+	std::vector<vec3> newPoints;
 	for (int i = 0; i < points.size() - 1; i++)
 	{
 		newPoints.push_back(points[i] *step + points[i + 1] * (1-step) );
@@ -57,9 +57,9 @@ vec2 Bezier::Casteljau(std::vector<vec2> points, float step)
 }
 
 /*
-std::vector<vec2> Bezier::Spline(float step, float min, float max, vec2 p1, vec2 p2, vec2 p3, vec2 p4)
+std::vector<vec3> Bezier::Spline(float step, float min, float max, vec3 p1, vec3 p2, vec3 p3, vec3 p4)
 {
-	std::vector<vec2> points = std::vector<vec2>();
+	std::vector<vec3> points = std::vector<vec3>();
 
 	//points.push_back(p1);
 	std::cout << "Starting Bezier" << std::endl;
@@ -72,7 +72,7 @@ std::vector<vec2> Bezier::Spline(float step, float min, float max, vec2 p1, vec2
 		float x = (pow(1 - t, 3)*p1.x + (pow(3*t, 3) - pow(6*t, 2) + 4)*p2.x + (pow(-3*t, 3) + pow(3*t, 2) + 3*t + 1)*p3.x + pow(t, 3)*p4.x) / 6;
 		float y = (pow(1 - t, 3)*p1.y + (pow(3*t, 3) - pow(6*t, 2) + 4)*p2.y + (pow(-3*t, 3) + pow(3*t, 2) + 3*t + 1)*p3.y + pow(t, 3)*p4.y) / 6;
 		std::cout << "X : " << x << " Y : " << y << std::endl;
-		points.push_back(vec2(x, y));
+		points.push_back(vec3(x, y));
 
 	}
 
@@ -84,14 +84,14 @@ std::vector<vec2> Bezier::Spline(float step, float min, float max, vec2 p1, vec2
 }
 */
 
-std::vector<vec2> newPoints;
-std::vector<vec2> returnPoints;
+std::vector<vec3> newPoints;
+std::vector<vec3> returnPoints;
 
-vec2 tmpCoord;
+vec3 tmpCoord;
 
-void getCasteljauPoint(int n, std::vector<vec2> points, float t, float min, float max) {
+void getCasteljauPoint(int n, std::vector<vec3> points, float t, float min, float max) {
 
-	std::vector<vec2> subTab = points;
+	std::vector<vec3> subTab = points;
 	/*
 	if (n == 1)
 	{
@@ -105,7 +105,7 @@ void getCasteljauPoint(int n, std::vector<vec2> points, float t, float min, floa
 	{
 		float x = t * points[i].x + (1 - t)*points[i + 1].x;
 		float y = t * points[i].y + (1 - t)*points[i + 1].y;
-		subTab.push_back(vec2(x, y));
+		subTab.push_back(vec3(x, y));
 	}
 	*/
 	int s = 0;
@@ -114,8 +114,8 @@ void getCasteljauPoint(int n, std::vector<vec2> points, float t, float min, floa
 		for (int i = 0; i < n - j; i++) {
 			float x = ((max - t) / (max - min)) * subTab[i].x + ((t-min) / (max-min))*subTab[i + 1].x;
 			float y = ((max - t) / (max - min)) * subTab[i].y + ((t - min) / (max - min))*subTab[i + 1].y;
-			subTab[i] = (vec2(x, y));
-			//newPoints.push_back(vec2(x, y));
+			subTab[i] = (vec3(x, y, 0));
+			//newPoints.push_back(vec3(x, y));
 
 		}
 		//newPoints.push_back(subTab[0]);
@@ -128,11 +128,11 @@ void getCasteljauPoint(int n, std::vector<vec2> points, float t, float min, floa
 	//getCasteljauPoint(n - 1, subTab, t);
 }
 
-std::vector<vec2> Bezier::CasteljauBezier(std::vector<vec2> points, float step, std::vector<int> paramSpace)
+std::vector<vec3> Bezier::CasteljauBezier(std::vector<vec3> points, float step, std::vector<int> paramSpace)
 {
-	//vec2 tmp;
+	//vec3 tmp;
 	//newPoints = points;
-	//returnPoints = std::vector<vec2>();
+	//returnPoints = std::vector<vec3>();
 	float intistep = step;
 	newPoints.clear();
 	/*for (int i = 0; i < paramSpace.size()-1; i ++) {
@@ -151,13 +151,13 @@ std::vector<vec2> Bezier::CasteljauBezier(std::vector<vec2> points, float step, 
 	return newPoints;
 }
 
-std::vector<vec2> Bezier::Raccord(int level, std::vector<vec2> points, std::vector<int> paramSpace)
+std::vector<vec3> Bezier::Raccord(int level, std::vector<vec3> points, std::vector<int> paramSpace)
 {
-	std::vector<vec2> returnPoints = std::vector<vec2>();
-	std::vector<vec2> tmp;
-	vec2 vect;
-	vec2 vect2;
-	vec2 vect3;
+	std::vector<vec3> returnPoints = std::vector<vec3>();
+	std::vector<vec3> tmp;
+	vec3 vect;
+	vec3 vect2;
+	vec3 vect3;
 	switch (level)
 	{
 	case 0:
@@ -201,16 +201,16 @@ std::vector<vec2> Bezier::Raccord(int level, std::vector<vec2> points, std::vect
 }
 
 
-void Bezier::Spline(std::vector<vec2> points, std::vector<float> nodalVec, bool version1)
+void Bezier::Spline(std::vector<vec3> points, std::vector<float> nodalVec, bool version1)
 {
 	
-	std::vector<vec2> frags = std::vector<vec2>();
-	currentCurveObjects = std::vector<std::vector<vec2>>();
+	std::vector<vec3> frags = std::vector<vec3>();
+	currentCurveObjects = std::vector<std::vector<vec3>>();
 	/*
 	if (points.size() < 4)
 	{
 		newCurves[0].controlPoints = points;
-		return std::vector<vec2>();
+		return std::vector<vec3>();
 	}
 	*/
 
@@ -223,12 +223,12 @@ void Bezier::Spline(std::vector<vec2> points, std::vector<float> nodalVec, bool 
 	for (int i = 1; i < points.size() - 2; i++)
 	{
 		//prend le 2tier et rajoute le premier tiers du suivant :)
-		vec2 f((points[i + 1] - points[i]) * 0.667f + points[i]);
+		vec3 f((points[i + 1] - points[i]) * 0.667f + points[i]);
 
 		//On met un premier point du segment en cours
 		frags.push_back(f);
 
-		vec2 s((points[i + 2] - points[i + 1]) * 0.333f + points[i + 1]);
+		vec3 s((points[i + 2] - points[i + 1]) * 0.333f + points[i + 1]);
 
 		//---
 		frags.push_back((s - f)*0.333f + f);
@@ -241,7 +241,7 @@ void Bezier::Spline(std::vector<vec2> points, std::vector<float> nodalVec, bool 
 
 	if(version1)
 	for (int i = 0; i < frags.size(); i += 3) {
-		std::vector<vec2> temp = std::vector<vec2>();
+		std::vector<vec3> temp = std::vector<vec3>();
 		if (frags.size() - i - 1 > 3) {
 			
 			temp.push_back(frags[i]);
@@ -268,8 +268,8 @@ void Bezier::Spline(std::vector<vec2> points, std::vector<float> nodalVec, bool 
 	return;
 }
 
-vec2 Bezier::deBoor(int k, int degree, int i, float x, std::vector<float> knots, std::vector<vec2> ctrlPoints)
+vec3 Bezier::deBoor(int k, int degree, int i, float x, std::vector<float> knots, std::vector<vec3> ctrlPoints)
 {
 
-	return vec2();
+	return vec3();
 }
