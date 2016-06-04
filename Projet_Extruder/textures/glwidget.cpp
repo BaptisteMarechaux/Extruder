@@ -53,6 +53,21 @@
 #include <QOpenGLTexture>
 #include <QMouseEvent>
 
+#include <QtOpenGL/QtOpenGL>
+
+// Pour les tableaux
+#include <vector>
+
+// Enregistre les coordonnées de la souris
+GLint mousex;
+GLint mousey;
+
+//B Curve ArrayPoint
+vector<CurveObject> curves;
+
+int index = 0;
+int currentCurve = 0;
+
 GLWidget::GLWidget(QWidget *parent)
     : QOpenGLWidget(parent),
       clearColor(Qt::black),
@@ -142,6 +157,9 @@ void GLWidget::initializeGL()
 
     program->bind();
     program->setUniformValue("texture", 0);
+
+    CurveObject firstPoly;
+    curves.push_back(firstPoly);
 }
 
 void GLWidget::paintGL()
@@ -166,6 +184,15 @@ void GLWidget::paintGL()
         textures[i]->bind();
         glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
     }
+
+    for (int p = 0; p < curves.size(); p++)
+    {
+        glBegin(GL_LINE_STRIP);
+        for (int i = 0; i < curves[p].controlPoints.size(); i++) {
+            glVertex2i(curves[p].controlPoints[i].x(), curves[p].controlPoints[i].y());
+        }
+        glEnd();
+    }
 }
 void GLWidget::resizeGL(int width, int height)
 {
@@ -173,9 +200,19 @@ void GLWidget::resizeGL(int width, int height)
     glViewport((width - side) / 2, (height - side) / 2, side, side);
 }
 
+
+
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
     lastPos = event->pos();
+
+    //Si on effectue un clic gauche
+    mousex = event->x();
+    mousey = event->y();
+    QVector3D tmpPoint;
+    tmpPoint.setX(mousex);
+    tmpPoint.setY(mousey);
+    curves[currentCurve].controlPoints.push_back(tmpPoint);
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)

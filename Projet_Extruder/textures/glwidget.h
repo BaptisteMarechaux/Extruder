@@ -54,6 +54,7 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
+#include <QVector3D>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -93,6 +94,22 @@ private:
     QOpenGLTexture *textures[6];
     QOpenGLShaderProgram *program;
     QOpenGLBuffer vbo;
+};
+
+using std::vector;
+
+class CurveObject {
+    public:
+        vector<QVector3D> controlPoints;
+        vector<QVector3D> curvePoints;
+        vector<QVector3D> splineControlPoints;
+        vector<QVector3D> splineCurvePoints;
+        vector<int> paramPoints;
+
+        CurveObject() {
+            controlPoints = vector<QVector3D>();
+            curvePoints = vector<QVector3D>();
+        }
 };
 
 #endif
