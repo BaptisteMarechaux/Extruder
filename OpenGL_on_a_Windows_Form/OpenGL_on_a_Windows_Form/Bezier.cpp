@@ -274,3 +274,49 @@ vec3 Bezier::deBoor(int k, int degree, int i, float x, std::vector<float> knots,
 
 	return vec3();
 }
+
+//Faire le découpage en triangle immédiatement après avoir obtenu le 
+std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, float step) //Type de retour à changer en Curve3D
+{
+	last2DCurvePointsCount = points.size();
+	std::vector<vec3> newPoints = std::vector<vec3>();
+	for (int i = 0; i < points.size(); i++) {
+		for (float j = 0; j < length; j += step) {
+			newPoints.push_back(vec3(points[i].x, points[i].y, points[i].z+step));
+		}
+	}
+	return newPoints;
+}
+
+std::vector<vec3> Bezier::revolutionExtrude(std::vector<vec3> points, float step, float radius) //type de retour à changer en Curve3D
+{
+	std::vector<vec3> newPoints = std::vector<vec3>();
+	for (int i = 0; i < points.size(); i++) {
+		if (i > 0 && i < points.size() - 1) {
+			for (float j = 0; j < 2 * PI; j += step) {
+				//Eventuellement changer d'axe pour avoir une rotation correcte
+				newPoints.push_back(vec3(points[i].x+radius*cos(j), points[i].y+radius*sin(j), points[i].z));
+			}
+		}
+		else
+		{
+			newPoints.push_back(points[i]);
+		}
+		
+	}
+	return newPoints;
+}
+
+//Faire un nouveau calculs de triangles directement dans la fonction de révolution : On calcule les nouveaux sommets dans une struct Curve3D (qu'on va ensuite renvoyer)
+//on peut ensuite se servir du résultat envoyé pour utiliser des fonctions OPENGL dessus.
+
+std::vector<int> Bezier::getTriangleIndicesFrom3D(std::vector<vec3> points)
+{
+	vector<int> triangleList;
+	for (int i = 0; i < points.size(); i++) {
+		triangleList.push_back(i);
+		triangleList.push_back(i + 1);
+		triangleList.push_back(i + last2DCurvePointsCount);
+	}
+	return triangleList;
+}

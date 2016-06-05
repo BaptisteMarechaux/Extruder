@@ -6,6 +6,8 @@
 
 using namespace glm;
 
+#define PI 3.1415926535
+
 class Bezier
 {
 private:
@@ -14,6 +16,8 @@ private:
 public:
 	Bezier();
 	~Bezier();
+
+	int last2DCurvePointsCount;
 
 	std::vector<std::vector<vec3>> currentCurveObjects;
 
@@ -31,5 +35,31 @@ public:
 	void Spline(std::vector<vec3> points, std::vector<float> nodalVec, bool version1);
 
 	vec3 deBoor(int k, int degree, int i, float x, std::vector<float> knots, std::vector<vec3> ctrlPoints);
+
+	std::vector<vec3> simpleExtrude(std::vector<vec3> points, float length, float step);
+
+	std::vector<vec3> revolutionExtrude(std::vector<vec3> points, float step, float radius);
+
+	std::vector<int> getTriangleIndicesFrom3D(std::vector<vec3> points);
+
+	std::vector<int> getSquareIndicesFrom3D(std::vector<vec3> points);
+
 };
 
+public enum MeshType {
+	TRIANGLE,
+	SQUARE
+};
+
+public struct Curve3D {
+public :
+	int basePointsCount;
+	std::vector<vec3> points;
+	std::vector<int> indices;
+	MeshType meshType;
+	
+	Curve3D(int _basePoints, std::vector<vec3> _points, MeshType _meshType) {
+
+	}
+
+};
