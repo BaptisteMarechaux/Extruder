@@ -14,8 +14,12 @@
 
 // Pour les fonctions
 #include "Draw.h"
+#include "Bezier.h"
 
 using namespace std;
+
+#using <System.Windows.Forms.dll>
+using namespace System::Windows::Forms;
 
 #define PI 3.14159265
 
@@ -27,12 +31,14 @@ typedef GLfloat color[3];
 // Enregistre les coordonnées de la souris
 GLint mousex;
 GLint mousey;
+GLint oldMousex;
+GLint oldMousey;
 
 // Enregistre la taille de la fenêtre
 GLint Win;
 
 // Index du mode pour le traçage des formes
-int indexPolyMode=3;
+int indexPolyMode = 3;
 // Index du mode général
 int mode; // 1 = Poly
 bool modifying = false;
@@ -48,6 +54,7 @@ vector<int> indexOfModifyingSplinePoint;
 vector<int> currentParameterSpace;
 
 bool leftButtonPressed = false;
+bool leftButtonRealPressed = false;
 
 //B Curve ArrayPoint
 vector<CurveObject> curves;
@@ -66,7 +73,7 @@ bool showParam;
 int nStep = 20;
 
 // Dimmension du repère de la fenêtre
-int hmax = 800, vmax = 600, hmin=0, vmin=0;
+int hmax = 800, vmax = 600, hmin = 0, vmin = 0;
 
 // Définition de la couleur de remplissager
 color redColor = { 1.0f, 0.0f, 0.0f };
@@ -101,18 +108,18 @@ void setDim(int _w, int _h) {
 	h = _h;
 }
 
-void Initialize() 
+void Initialize()
 {
 	/*//std::cout << sin(1);
 	std::cout << sin(1.0);
 	glClearColor(1.0, 0.984, 0.906, 0.961);
 	glColor3f(0.0f, 0.0f, 1.0f);
-	
-	glMatrixMode(GL_PROJECTION);	
-	glLoadIdentity();	
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
 	gluOrtho2D(0.0, (GLdouble)800,
-		(GLdouble)600, 0.0);*/
+	(GLdouble)600, 0.0);*/
 
 	//polyColor.push_back(2);
 
@@ -159,7 +166,7 @@ void DrawRender()
 {
 	// Nettoyage de la fenêtre
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	// On trace le poly en fonction du mode de traçage choisi
 	switch (indexPolyMode) {
 	case 3:
@@ -173,13 +180,13 @@ void DrawRender()
 			glLoadIdentity();
 			glBegin(GL_POINTS);
 			for (int i = 0; i < curves[p].controlPoints.size(); i++) {
-				glVertex3d(curves[p].controlPoints[i].x, 0, curves[p].controlPoints[i].y);
+				glVertex3d(curves[p].controlPoints[i].x, curves[p].controlPoints[i].z, curves[p].controlPoints[i].y);
 			}
 			glEnd();
 			glLoadIdentity();
 			glBegin(GL_LINE_STRIP);//POINTS
 			for (int i = 0; i < curves[p].controlPoints.size(); i++) {
-				glVertex3d(curves[p].controlPoints[i].x, 0, curves[p].controlPoints[i].y);
+				glVertex3d(curves[p].controlPoints[i].x, curves[p].controlPoints[i].z, curves[p].controlPoints[i].y);
 			}
 			glEnd();
 
@@ -247,33 +254,35 @@ void DrawRender()
 }
 
 // Fonction d'evenements à la souris
-void mouse(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e)
+void _mouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e)
 {
 	//Si on effectue un clic gauche
 	if (e->Button == System::Windows::Forms::MouseButtons::Left)
 	{
-			mousex = e->X;
-			mousey = e->Y;
-			vec3 tmpPoint;
-			tmpPoint.x = ((float)mousex - w / 2) / 80;
-			tmpPoint.y = ((float)mousey - h / 2) / 55;
-			std::cout << e->X << " " << e->Y << " " << tmpPoint.x << " " << tmpPoint.y << "\n";
-			if (mode == 1) {
-				curves[currentCurve].controlPoints.push_back(tmpPoint);
-				currentParameterSpace.push_back(index += 10);
-				//curves[currentCurve].paramPoints.push_back()
-			}
-			leftButtonPressed = false;
+		mousex = e->X;
+		mousey = e->Y;
+		vec3 tmpPoint;
+		tmpPoint.x = ((float)mousex - w / 2) / 80;
+		tmpPoint.y = ((float)mousey - h / 2) / 55;
+		tmpPoint.z = 0;
+		std::cout << e->X << " " << e->Y << " " << tmpPoint.x << " " << tmpPoint.y << "\n";
+		if (mode == 1) {
+			curves[currentCurve].controlPoints.push_back(tmpPoint);
+			currentParameterSpace.push_back(index += 10);
+			//curves[currentCurve].paramPoints.push_back()
+		}
+		leftButtonPressed = false;
 	}
 
 	if (e->Button == System::Windows::Forms::MouseButtons::Right)
 
 	{
 		leftButtonPressed = false;
+		leftButtonRealPressed = false;
 	}
 }
 
-void mouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+void _mouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 	if (e->Button == System::Windows::Forms::MouseButtons::Right) {
 		indexOfModifyingPoly = 0;
 		indexOfModifyingPoint = 0;
@@ -287,7 +296,7 @@ void mouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^ 
 		for (int p = 0; p < curves.size(); p++)
 		{
 			for (unsigned int i = 0; i < curves[p].controlPoints.size(); i++) {
-				if (sqrt((((float)e->X - w / 2) / 80 - curves[p].controlPoints[i].x)*(((float)e->X - w / 2) / 80 - curves[p].controlPoints[i].x) + (((float)e->Y- h / 2) /55 - curves[p].controlPoints[i].y)*(((float)e->Y- h / 2) /55 - curves[p].controlPoints[i].y)) < 0.1) {
+				if (sqrt((((float)e->X - w / 2) / 80 - curves[p].controlPoints[i].x)*(((float)e->X - w / 2) / 80 - curves[p].controlPoints[i].x) + (((float)e->Y - h / 2) / 55 - curves[p].controlPoints[i].y)*(((float)e->Y - h / 2) / 55 - curves[p].controlPoints[i].y)) < 0.1) {
 					indexOfModifyingPoly = p;
 					indexOfModifyingPoint = i;
 					modifyingMode = 1;
@@ -302,7 +311,7 @@ void mouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^ 
 		{
 			for (unsigned int i = 0; i < curves[p].splineControlPoints.size(); i++) {
 				for (unsigned int j = 0; j < curves[p].splineControlPoints[i].size(); j++) {
-					if (sqrt((((float)e->X - w / 2) / 80 - curves[p].splineControlPoints[i][j].x)*(((float)e->X - w / 2) / 80 - curves[p].splineControlPoints[i][j].x) + (((float)e->Y- h / 2) /55 - curves[p].splineControlPoints[i][j].y)*(((float)e->Y- h / 2) /55 - curves[p].splineControlPoints[i][j].y)) < 0.1) {
+					if (sqrt((((float)e->X - w / 2) / 80 - curves[p].splineControlPoints[i][j].x)*(((float)e->X - w / 2) / 80 - curves[p].splineControlPoints[i][j].x) + (((float)e->Y - h / 2) / 55 - curves[p].splineControlPoints[i][j].y)*(((float)e->Y - h / 2) / 55 - curves[p].splineControlPoints[i][j].y)) < 0.1) {
 						indexOfModifyingPoly2 = p;
 						indexOfModifyingSpline.push_back(i);
 						indexOfModifyingSplinePoint.push_back(j);
@@ -314,45 +323,100 @@ void mouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^ 
 			}
 		}
 	}
+	if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+		leftButtonRealPressed = true;
+	}
 }
 
 void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 	if (modifying && leftButtonPressed) {
 		if (modifyingMode == 1) {
 			curves[indexOfModifyingPoly].controlPoints[indexOfModifyingPoint].x = ((float)e->X - w / 2) / 80;
-			curves[indexOfModifyingPoly].controlPoints[indexOfModifyingPoint].y = ((float)e->Y- h / 2) /55;
+			curves[indexOfModifyingPoly].controlPoints[indexOfModifyingPoint].y = ((float)e->Y - h / 2) / 55;
 		}
 		if (modifyingMode2 == 1) {
 			for (unsigned int i = 0; i < indexOfModifyingSpline.size(); i++) {
 				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].x = ((float)e->X - w / 2) / 80;
-				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].y = ((float)e->Y- h / 2) /55;
+				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].y = ((float)e->Y - h / 2) / 55;
 			}
 		}
 	}
+
+	if (leftButtonRealPressed) {
+
+		// these lines limit the camera's range
+		/*if (mouseY < 200)
+			mouseY = 200;
+		if (mouseY > 450)
+			mouseY = 450;*/
+
+		if (e->Y != oldMousey) {
+			draw::camera_y = sin(draw::camAngle);
+			draw::y_direction = -sin(draw::camAngle);
+		}
+		if (e->X != oldMousex)
+		{
+			draw::camera_x = cos(draw::camAngle);
+			draw::camera_z = sin(draw::camAngle);
+			draw::x_direction = -cos(draw::camAngle);
+			draw::z_direction = -sin(draw::camAngle);
+
+			if ((e->X - oldMousex) > 0)             // mouse moved to the right
+			draw::camAngle += 0.01f;
+			else if ((e->X - oldMousex) < 0)     // mouse moved to the left
+			draw::camAngle -= 0.01f;
+
+		}
+
+		oldMousex = e->X;
+		oldMousey = e->Y;
+
+		UpdateCam();
+	}
+}
+
+void _mouseWheel(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	if(draw::camera_y * (draw::zoom + -e->Delta * SystemInformation::MouseWheelScrollLines / 120 / 2) > 0)
+		draw::zoom += -e->Delta * SystemInformation::MouseWheelScrollLines / 120 /2;
+	UpdateCam();
+}
+
+void UpdateCam() {
+
+	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+	glLoadIdentity();									// Reset The Projection Matrix
+
+	gluPerspective(45.0f, (GLfloat)442 / (GLfloat)510, 0.1f, 100.0f);
+
+	gluLookAt(draw::camera_x * draw::zoom, draw::camera_y * draw::zoom, draw::camera_z * draw::zoom, draw::x_direction, draw::y_direction, draw::z_direction, 0.0, 1.0, 0.0);
+
+
+	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+	glLoadIdentity();
 }
 
 // Procédés appelés au clavier
-void keyboard(unsigned char key, int xmouse, int ymouse)
+void keyboard(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e)
 {
 	vector<CurveObject> splineParts;
 	Bezier bez;
 	// En fonction de la touche
-	switch (key) {
+	switch (e->KeyCode) {
 		// On change la couleur de fond
-	case 97:
+	case System::Windows::Forms::Keys::A:
 		glClearColor(1.0, 0.984, 0.906, 0.961);
 		std::cout << "clear";
 		break;
 		// On change la couleur de fond
-	case 122:
+	case System::Windows::Forms::Keys::B:
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		std::cout << "clear";
 		break;
 		// On quitte l'application avec la touche echap
-	case 27:
-		glutDestroyWindow(Win);
+	case System::Windows::Forms::Keys::Escape:
+		//glutDestroyWindow(Win);
 		break;
-	case 32:
+	case System::Windows::Forms::Keys::Space:
 		//confirmer la spline
 		bez.Spline(curves[currentCurve].controlPoints, vector<float>(), true);
 		//curves.pop_back();
@@ -366,32 +430,27 @@ void keyboard(unsigned char key, int xmouse, int ymouse)
 			//curves[currentCurve].splinePoints.push_back(bez.currentCurveObjects[i]);
 		}
 		break;
-	// On zoom avec le + du pavé numérique
-	case '+':
+		// On zoom avec le + du pavé numérique
+	case System::Windows::Forms::Keys::Add:
 		nStep += 1;
 		break;
 
-	// On dé-zoom avec le - du pavé numérique
-	case '-':
-		if(nStep > 1)
+		// On dé-zoom avec le - du pavé numérique
+	case System::Windows::Forms::Keys::Subtract:
+		if (nStep > 1)
 			nStep -= 1;
 		break;
 	default:
 		break;
 	}
-	// Demande de le redessin de la fenêtre
-	glutPostRedisplay();
-}
 
-// Procédés appelés au clavier
-void specialInput(int key, int x, int y)
-{
+
 	int _x = 0;
 	int _y = 0;
 
 	// En fonction de la touche
-	switch (key) {
-	case GLUT_KEY_UP:    // key up
+	switch (e->KeyCode) {
+	case System::Windows::Forms::Keys::Up:    // key up
 		switch (modifierType)
 		{
 		case 1:
@@ -417,7 +476,7 @@ void specialInput(int key, int x, int y)
 			break;
 		}
 		break;
-	case GLUT_KEY_DOWN:    // key down
+	case System::Windows::Forms::Keys::Down:    // key down
 		switch (modifierType)
 		{
 		case 1:
@@ -443,7 +502,7 @@ void specialInput(int key, int x, int y)
 			break;
 		}
 		break;
-	case GLUT_KEY_RIGHT:    // key right
+	case System::Windows::Forms::Keys::Right:    // key right
 		switch (modifierType)
 		{
 		case 1:
@@ -494,7 +553,7 @@ void specialInput(int key, int x, int y)
 			break;
 		}
 		break;
-	case GLUT_KEY_LEFT:    // key left
+	case System::Windows::Forms::Keys::Left:    // key left
 		switch (modifierType)
 		{
 		case 1:
@@ -548,8 +607,6 @@ void specialInput(int key, int x, int y)
 	default:
 		break;
 	}
-	// Demande de le redessin de la fenêtre
-	glutPostRedisplay();
 }
 
 // Fonction de menu principal
@@ -610,13 +667,13 @@ void prop_menu(int option) {
 
 // Fonction du menu qui permet de changer la couleur de la forme dessinée
 void colors_menu(int option) {
-		if (polyColor.size() != 0) {
-			polyColor[currentCurve] = option;
-		}
-		else
-		{
-			polyColor.push_back(option);
-		}
+	if (polyColor.size() != 0) {
+		polyColor[currentCurve] = option;
+	}
+	else
+	{
+		polyColor.push_back(option);
+	}
 	// Demande de le redessin de la fenêtre
 	glutPostRedisplay();
 }
@@ -629,7 +686,7 @@ void polyMade_menu(int option) {
 		curves[currentCurve].paramPoints.push_back(1);
 		curves[currentCurve].paramPoints.push_back(1);
 	}
-		switch (option) {
+	switch (option) {
 		// Nettoie la fenêtre et les structures
 	case 1:
 		if (curves.size() != 0) {
@@ -650,7 +707,7 @@ void polyMade_menu(int option) {
 		if (curves.size() != 0) {
 			if (curves[currentCurve].controlPoints.size() > 3) {
 				CurveObject tmpPoly;
-					tmpPoly.controlPoints = b.Raccord(0, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
+				tmpPoly.controlPoints = b.Raccord(0, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
 				curves.push_back(tmpPoly);
 				polyColor.push_back(2);
 				currentCurve++;
@@ -661,7 +718,7 @@ void polyMade_menu(int option) {
 		if (curves.size() != 0) {
 			if (curves[currentCurve].controlPoints.size() > 3) {
 				CurveObject tmpPoly;
-					tmpPoly.controlPoints = b.Raccord(1, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
+				tmpPoly.controlPoints = b.Raccord(1, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
 				curves.push_back(tmpPoly);
 				polyColor.push_back(2);
 				currentCurve++;
@@ -672,7 +729,7 @@ void polyMade_menu(int option) {
 		if (curves.size() != 0) {
 			if (curves[currentCurve].controlPoints.size() > 3) {
 				CurveObject tmpPoly;
-					tmpPoly.controlPoints = b.Raccord(2, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
+				tmpPoly.controlPoints = b.Raccord(2, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
 				curves.push_back(tmpPoly);
 				polyColor.push_back(2);
 				currentCurve++;
@@ -689,7 +746,7 @@ void polyMade_menu(int option) {
 // Menu doption supplémentaires
 void option_menu(int option) {
 	switch (option) {
-	// Nettoie la fenêtre et les structures
+		// Nettoie la fenêtre et les structures
 	case 1:
 		modifying = !modifying;
 		mode = 0;
@@ -706,7 +763,7 @@ void option_menu(int option) {
 		indexPolyMode = 3;
 		mode = 0;
 		break;
-	// Affiche les crédits
+		// Affiche les crédits
 	case 4:
 		showCredits = !showCredits;
 		break;

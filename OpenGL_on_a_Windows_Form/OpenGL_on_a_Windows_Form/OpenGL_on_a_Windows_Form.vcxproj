@@ -71,6 +71,7 @@
       <EntryPointSymbol>main</EntryPointSymbol>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>/libs</AdditionalLibraryDirectories>
+      <AdditionalOptions> /FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

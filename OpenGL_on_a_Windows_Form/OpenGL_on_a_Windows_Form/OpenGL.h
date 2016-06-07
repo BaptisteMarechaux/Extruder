@@ -20,9 +20,7 @@ namespace OpenGLForm
 		GLfloat	rtri;				// Angle for the triangle
 		GLfloat	rquad;				// Angle for the quad
 									//  Camera position, look at position, up vector
-		double eyeX, eyeY, eyeZ;
-		double centerX, centerY, centerZ;
-		double upX, upY, upZ;
+
 
 		int cameraType;
 
@@ -32,11 +30,11 @@ namespace OpenGLForm
 			this->Cursor = System::Windows::Forms::Cursors::Cross;
 			this->Location = System::Drawing::Point(20, 20);
 
-			//this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, keyboard);
-			this->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(mouse);
-			this->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(mouseMove);
+			this->KeyUp += gcnew System::Windows::Forms::KeyEventHandler(keyboard);
+			this->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(_mouseUp);
+			this->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(_mouseDown);
 			this->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(mouseMotion);
-			//this->MouseWheel += gcnew System::Windows::Forms::MouseEventHandler(mouseMotion);
+			this->MouseWheel += gcnew System::Windows::Forms::MouseEventHandler(_mouseWheel);
 
 			// Specify the form as the parent.
 			this->Parent = parentForm;
@@ -260,7 +258,6 @@ namespace OpenGLForm
 			glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 			glLoadIdentity();									// Reset The Projection Matrix
 
-
 																// Calculate The Aspect Ratio Of The Window
 			switch (cameraType) {
 			case 1:
@@ -270,6 +267,7 @@ namespace OpenGLForm
 					0, 0, 0,//center
 					0, 1, 0);//up
 				break;
+				//gluLookAt(draw::camera_x, draw::camera_y, draw::camera_z, draw::x_direction, draw::y_direction, draw::z_direction, 0.0, 1.0, 0.0);
 			case 2://front : texture rendered correctly
 				glOrtho(-2, 2, -2, 2, -50, 50);
 				gluLookAt(
@@ -285,7 +283,6 @@ namespace OpenGLForm
 					0, 0, -1);//up
 				break;
 			}
-
 
 			glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
 			glLoadIdentity();									// Reset The Modelview Matrix
