@@ -280,10 +280,25 @@ std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, 
 {
 	last2DCurvePointsCount = points.size();
 	std::vector<vec3> newPoints = std::vector<vec3>();
+
+	std::vector<int> indices;
 	for (int i = 0; i < points.size(); i++) {
-		for (float j = 0; j < length; j += step) {
-			newPoints.push_back(vec3(points[i].x, points[i].y, points[i].z+step));
+		newPoints.push_back(vec3(points[i].x, points[i].y, points[i].z+length));
+	}
+
+	for (int i = i; i < newPoints.size()-1; i++) {
+		if (i % 2 == 0) {
+			indices.push_back(i - 1);
+			indices.push_back(i);
+			indices.push_back(i + 1);
 		}
+		else
+		{
+			indices.push_back(i - 1);
+			indices.push_back(i+1);
+			indices.push_back(i);
+		}
+		
 	}
 	return newPoints;
 }
@@ -291,11 +306,17 @@ std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, 
 std::vector<vec3> Bezier::revolutionExtrude(std::vector<vec3> points, float step, float radius) //type de retour à changer en Curve3D
 {
 	std::vector<vec3> newPoints = std::vector<vec3>();
+	vector<int> width = vector<int>(points.size()); //Va déterminer combien de vertices il y a sur une ligne
+
+	vector<int> indices;
 	for (int i = 0; i < points.size(); i++) {
 		if (i > 0 && i < points.size() - 1) {
+			width[i] = 0;
 			for (float j = 0; j < 2 * PI; j += step) {
+				width[i] +=1;
 				//Eventuellement changer d'axe pour avoir une rotation correcte
-				newPoints.push_back(vec3(points[i].x+radius*cos(j), points[i].y+radius*sin(j), points[i].z));
+
+				newPoints.push_back(vec3(points[i].x * cos(j), points[i].x*sin(j), points[i].y));
 			}
 		}
 		else
@@ -304,7 +325,24 @@ std::vector<vec3> Bezier::revolutionExtrude(std::vector<vec3> points, float step
 		}
 		
 	}
+
+	for (int i = 1; i < newPoints.size()-1; i++) {
+		if (i % 2 == 0) {
+			//indices.push_back()
+			indices.push_back(i);
+		}
+		else
+		{
+			indices.push_back(i);
+		}
+		
+	}
 	return newPoints;
+}
+
+std::vector<vec3> Bezier::generalExtrude(std::vector<vec3> points, float step)
+{
+	return std::vector<vec3>();
 }
 
 //Faire un nouveau calculs de triangles directement dans la fonction de révolution : On calcule les nouveaux sommets dans une struct Curve3D (qu'on va ensuite renvoyer)
