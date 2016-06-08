@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 
+#include "SOIL.h"
 // C, standard, dio
 #include <cstdio>
 // C, standard, int
@@ -103,6 +104,12 @@ int index = 0;
 int w = 800, h = 600;
 bool alreadyInit = false;
 
+int rotLight1 = 0;
+
+GLuint ListeTextures[4];
+
+int renderType = 0, textureIndex = 0;
+
 void setDim(int _w, int _h) {
 	w = _w;
 	h = _h;
@@ -156,6 +163,15 @@ void Initialize()
 				curves[currentCurve].controlPoints.clear();
 			}
 		}
+
+		// Chargement des textures
+		ListeTextures[0] = SOIL_load_OGL_texture("tex1.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+		ListeTextures[1] = SOIL_load_OGL_texture("tex2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+		ListeTextures[2] = SOIL_load_OGL_texture("tex3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+		ListeTextures[3] = SOIL_load_OGL_texture("tex4.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+
+		UpdateCam();
+
 		alreadyInit = true;
 	}
 	std::cout << mode << " mode" << "\n";
@@ -208,7 +224,7 @@ void DrawRender()
 				glColor3fv(purpleColor);
 				break;
 			}
-			glBegin(GL_LINE_STRIP);
+			glBegin(GL_TRIANGLE_STRIP);
 			for (int i = 0; i < curves[p].curvePoints.size(); i++) {
 				glVertex3d(curves[p].curvePoints[i].x, 0, curves[p].curvePoints[i].y);
 			}
@@ -242,13 +258,151 @@ void DrawRender()
 				}
 				glEnd();
 			}
-
 		}
 		break;
 
 	default:
 		break;
 	}
+
+	///// Lumières
+	// Pour parametrer nos objets
+	GLUquadric* params = gluNewQuadric();
+	// Supporte les textures
+	gluQuadricTexture(params, GL_TRUE);
+	//Positionnement de la lumiere avec les differents param?tres
+	glEnable(GL_LIGHTING);
+
+	// Parametre de la lumiere d'environnement
+	GLfloat global[] = { 0.5f,0.5f,0.5f,1.0f };
+	// Lumiere globale
+	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global);
+	//glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+
+	glPushMatrix();
+	// Light 1
+	rotLight1 += 1;
+	// Mouvement de la light
+	glRotated(rotLight1, 0.0, 0.0, 0.0);
+	// Parametres
+	GLfloat bleu[4] = { 0.0, 0.0, 1.0, 1.0 };
+	GLfloat bleuSpecular[4] = { 0.0, 1.0, 0.5, 0.5 };
+	GLfloat light1_position[] = { 2.0f, 8.0f, 2.0f, 0.0f };
+	glLightfv(GL_LIGHT1, GL_AMBIENT, bleu);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, bleu);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, bleuSpecular);
+	glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+	// Parametres du spot
+	GLfloat pos1[3] = { 0.0, -1.0, 0.0 };
+	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, pos1);
+	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 90.0);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 30);
+	glEnable(GL_LIGHT1);
+	glPopMatrix();
+	glPushMatrix();
+	// Light 2
+	glRotated(rotLight1 + 120, 0.0, 0.0, 0.0);
+	GLfloat green[4] = { 0.0, 1.0, 0.0, 1.0 };
+	GLfloat greenSpecular[4] = { 0.0, 1.0, 0.0, 1.0 };
+	GLfloat light2_position[] = { 2.0f, 8.0f, 2.0f, 0.0f };
+	glLightfv(GL_LIGHT2, GL_AMBIENT, green);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, green);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, greenSpecular);
+	glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+	GLfloat pos2[3] = { 0.0, -1.0, 0.0 };
+	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, pos2);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 90.0);
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 30);
+	glEnable(GL_LIGHT2);
+	glPopMatrix();
+	glPushMatrix();
+	// Light 3
+	glRotated(rotLight1 + 240, 0.0, 0.0, 0.0);
+	GLfloat red[4] = { 1.0, 0.0, 0.0, 1.0 };
+	GLfloat redSpecular[4] = { 0.0, 1.0, 0.0, 1.0 };
+	GLfloat light3_position[] = { 2.0f, 8.0f, 2.0f, 0.0f };
+	glLightfv(GL_LIGHT3, GL_AMBIENT, red);
+	glLightfv(GL_LIGHT3, GL_DIFFUSE, red);
+	glLightfv(GL_LIGHT3, GL_SPECULAR, redSpecular);
+	glLightfv(GL_LIGHT3, GL_POSITION, light3_position);
+	GLfloat pos3[3] = { 0.0, -1.0, 0.0 };
+	glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, pos3);
+	glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, 90.0);
+	glLightf(GL_LIGHT3, GL_SPOT_EXPONENT, 30);
+	glEnable(GL_LIGHT3);
+	glPopMatrix();
+
+	//GL_FRONT_AND_BACK
+	GLfloat mat_ambient[] = { 0.7, 0.7, 0.7, 1.0 };
+	GLfloat mat_ambient_color[] = { 0.8, 0.8, 0.2, 1.0 };
+	GLfloat mat_diffuse[] = { 0.1, 0.5, 0.8, 1.0 };
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat low_shininess[] = { 5.0 };
+	GLfloat high_shininess[] = { 100.0 };
+	GLfloat mat_emission[] = { 0.3, 0.2, 0.2, 0.0 };
+	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, low_shininess);
+	glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+
+	// Activation de material couleur
+	if (renderType == 1) {
+		//glEnable(GL_COLOR_MATERIAL);
+		//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	}
+
+	if (renderType == 1) {
+		glBegin(GL_QUADS);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 1);
+		glVertex3f(0.0f, 1, 1);
+		glVertex3f(0.0f, 1, 0.0f);
+		glEnd();
+	}
+
+	if (renderType == 2) {
+		glDisable(GL_COLOR_MATERIAL);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, ListeTextures[textureIndex]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glTexCoord2f(1.f, 0);
+		glVertex3f(0.0f, 0.0f, 1);
+		glTexCoord2f(1, 1);
+		glVertex3f(0.0f, 1, 1);
+		glTexCoord2f(0, 1.0f);
+		glVertex3f(0.0f, 1, 0.0f);
+		glEnd();
+	}
+
+	if (renderType == 0) {
+		//On se met en mode ligne (edge)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// On va dessinner de la couleur suivante
+		glColor3f(0.0f, 0.0f, 0.0f);
+		// Avec cette epaisseur de trait
+		glLineWidth(2.0f);
+		glBegin(GL_QUADS);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 1);
+		glVertex3f(0.0f, 1, 1);
+		glVertex3f(0.0f, 1, 0.0f);
+		glEnd();
+		glLineWidth(1.0f);
+		//glDisable(GL_POLYGON_OFFSET_LINE);
+		// On passe en mode face
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glEnable(GL_POLYGON_OFFSET_FILL);
+		//glPolygonOffset(1.0f, 1.0f);
+	}
+
+	glDisable(GL_LIGHTING);
 
 	glFlush();
 }
@@ -376,6 +530,7 @@ void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs
 }
 
 void _mouseWheel(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	cout << draw::zoom << endl;
 	if(draw::camera_y * (draw::zoom + -e->Delta * SystemInformation::MouseWheelScrollLines / 120 / 2) > 0)
 		draw::zoom += -e->Delta * SystemInformation::MouseWheelScrollLines / 120 /2;
 	UpdateCam();
@@ -674,8 +829,14 @@ void colors_menu(int option) {
 	{
 		polyColor.push_back(option);
 	}
-	// Demande de le redessin de la fenêtre
-	glutPostRedisplay();
+}
+
+void render_menu(int option) {
+	renderType = option;
+}
+
+void textures_menu(int option) {
+	textureIndex = option;
 }
 
 // Fonction du menu qui permet de changer la nature de la forme dessinée

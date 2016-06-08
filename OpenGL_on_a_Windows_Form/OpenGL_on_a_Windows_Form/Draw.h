@@ -26,7 +26,7 @@ namespace draw {
 	double camera_x = cos(camAngle) , camera_y = sin(camAngle), camera_z = sin(camAngle);
 	double x_direction = -cos(camAngle), y_direction = -sin(camAngle), z_direction = -sin(camAngle);
 	double upX, upY, upZ;
-	double zoom = 2;
+	double zoom = 3;
 }
 
 void DrawRender();
@@ -55,3 +55,8 @@ void _mouseWheel(System::Object^  sender, System::Windows::Forms::MouseEventArgs
 void setDim(int _w, int _h);
 
 void UpdateCam();
+
+void colors_menu(int option);
+void render_menu(int option);
+void textures_menu(int option);
+

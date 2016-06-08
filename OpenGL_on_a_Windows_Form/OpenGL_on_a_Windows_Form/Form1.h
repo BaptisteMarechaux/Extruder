@@ -78,7 +78,7 @@ namespace OpenGL_on_a_Windows_Form {
 	private: System::Windows::Forms::ToolStripMenuItem^  extrusionToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  helpToolStripMenuItem1;
 	private: System::Windows::Forms::ToolStripMenuItem^  modificationToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  rOugeToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  rougeToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  bleuToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  vertToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  noirToolStripMenuItem;
@@ -91,6 +91,13 @@ namespace OpenGL_on_a_Windows_Form {
 	private: System::Windows::Forms::ToolStripMenuItem^  simpleToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  revolutionToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  generaliseeToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  instructToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  creditsToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  texturesToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  lapinToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  motifToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  artworkToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  blancToolStripMenuItem;
 			 OpenGLForm::COpenGL ^ OpenGL2;
 
 
@@ -112,25 +119,32 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->ddedeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->exitToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->dzToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-				 this->rOugeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->rougeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->bleuToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->vertToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->noirToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->violetToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->extrusionToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->simpleToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->revolutionToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->generaliseeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->modeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->filaireToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->pleinToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->texturéToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->modificationToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->helpToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->instructToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->creditsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->texturesToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->lapinToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->motifToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->artworkToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				 this->blancToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 				 this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
 				 this->panel1 = (gcnew System::Windows::Forms::Panel());
-				 this->simpleToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-				 this->revolutionToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-				 this->generaliseeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->menuStrip1->SuspendLayout();
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
@@ -144,10 +158,10 @@ namespace OpenGL_on_a_Windows_Form {
 				 // 
 				 // menuStrip1
 				 // 
-				 this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(7) {
+				 this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(8) {
 					 this->fdeToolStripMenuItem,
 						 this->dzToolStripMenuItem, this->helpToolStripMenuItem, this->extrusionToolStripMenuItem, this->modeToolStripMenuItem, this->modificationToolStripMenuItem,
-						 this->helpToolStripMenuItem1
+						 this->texturesToolStripMenuItem, this->helpToolStripMenuItem1
 				 });
 				 this->menuStrip1->Location = System::Drawing::Point(0, 0);
 				 this->menuStrip1->Name = L"menuStrip1";
@@ -187,42 +201,47 @@ namespace OpenGL_on_a_Windows_Form {
 				 // dzToolStripMenuItem
 				 // 
 				 this->dzToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
-					 this->rOugeToolStripMenuItem,
+					 this->rougeToolStripMenuItem,
 						 this->bleuToolStripMenuItem, this->vertToolStripMenuItem, this->noirToolStripMenuItem, this->violetToolStripMenuItem
 				 });
 				 this->dzToolStripMenuItem->Name = L"dzToolStripMenuItem";
 				 this->dzToolStripMenuItem->Size = System::Drawing::Size(66, 20);
 				 this->dzToolStripMenuItem->Text = L"Couleurs";
 				 // 
-				 // rOugeToolStripMenuItem
+				 // rougeToolStripMenuItem
 				 // 
-				 this->rOugeToolStripMenuItem->Name = L"rOugeToolStripMenuItem";
-				 this->rOugeToolStripMenuItem->Size = System::Drawing::Size(108, 22);
-				 this->rOugeToolStripMenuItem->Text = L"Rouge";
+				 this->rougeToolStripMenuItem->Name = L"rougeToolStripMenuItem";
+				 this->rougeToolStripMenuItem->Size = System::Drawing::Size(108, 22);
+				 this->rougeToolStripMenuItem->Text = L"Rouge";
+				 this->rougeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::rougeToolStripMenuItem_Click);
 				 // 
 				 // bleuToolStripMenuItem
 				 // 
 				 this->bleuToolStripMenuItem->Name = L"bleuToolStripMenuItem";
 				 this->bleuToolStripMenuItem->Size = System::Drawing::Size(108, 22);
 				 this->bleuToolStripMenuItem->Text = L"Bleu";
+				 this->bleuToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::bleuToolStripMenuItem_Click);
 				 // 
 				 // vertToolStripMenuItem
 				 // 
 				 this->vertToolStripMenuItem->Name = L"vertToolStripMenuItem";
 				 this->vertToolStripMenuItem->Size = System::Drawing::Size(108, 22);
 				 this->vertToolStripMenuItem->Text = L"Vert";
+				 this->vertToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::vertToolStripMenuItem_Click);
 				 // 
 				 // noirToolStripMenuItem
 				 // 
 				 this->noirToolStripMenuItem->Name = L"noirToolStripMenuItem";
 				 this->noirToolStripMenuItem->Size = System::Drawing::Size(108, 22);
 				 this->noirToolStripMenuItem->Text = L"Noir";
+				 this->noirToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::noirToolStripMenuItem_Click);
 				 // 
 				 // violetToolStripMenuItem
 				 // 
 				 this->violetToolStripMenuItem->Name = L"violetToolStripMenuItem";
 				 this->violetToolStripMenuItem->Size = System::Drawing::Size(108, 22);
 				 this->violetToolStripMenuItem->Text = L"Violet";
+				 this->violetToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::violetToolStripMenuItem_Click);
 				 // 
 				 // helpToolStripMenuItem
 				 // 
@@ -240,6 +259,24 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->extrusionToolStripMenuItem->Size = System::Drawing::Size(67, 20);
 				 this->extrusionToolStripMenuItem->Text = L"Extrusion";
 				 // 
+				 // simpleToolStripMenuItem
+				 // 
+				 this->simpleToolStripMenuItem->Name = L"simpleToolStripMenuItem";
+				 this->simpleToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+				 this->simpleToolStripMenuItem->Text = L"Simple";
+				 // 
+				 // revolutionToolStripMenuItem
+				 // 
+				 this->revolutionToolStripMenuItem->Name = L"revolutionToolStripMenuItem";
+				 this->revolutionToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+				 this->revolutionToolStripMenuItem->Text = L"Revolution";
+				 // 
+				 // generaliseeToolStripMenuItem
+				 // 
+				 this->generaliseeToolStripMenuItem->Name = L"generaliseeToolStripMenuItem";
+				 this->generaliseeToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+				 this->generaliseeToolStripMenuItem->Text = L"Generalisee";
+				 // 
 				 // modeToolStripMenuItem
 				 // 
 				 this->modeToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
@@ -255,18 +292,21 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->filaireToolStripMenuItem->Name = L"filaireToolStripMenuItem";
 				 this->filaireToolStripMenuItem->Size = System::Drawing::Size(112, 22);
 				 this->filaireToolStripMenuItem->Text = L"Filaire";
+				 this->filaireToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::filaireToolStripMenuItem_Click);
 				 // 
 				 // pleinToolStripMenuItem
 				 // 
 				 this->pleinToolStripMenuItem->Name = L"pleinToolStripMenuItem";
 				 this->pleinToolStripMenuItem->Size = System::Drawing::Size(112, 22);
 				 this->pleinToolStripMenuItem->Text = L"Plein";
+				 this->pleinToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::pleinToolStripMenuItem_Click);
 				 // 
 				 // texturéToolStripMenuItem
 				 // 
 				 this->texturéToolStripMenuItem->Name = L"texturéToolStripMenuItem";
 				 this->texturéToolStripMenuItem->Size = System::Drawing::Size(112, 22);
 				 this->texturéToolStripMenuItem->Text = L"Texture";
+				 this->texturéToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::texturéToolStripMenuItem_Click);
 				 // 
 				 // modificationToolStripMenuItem
 				 // 
@@ -276,9 +316,63 @@ namespace OpenGL_on_a_Windows_Form {
 				 // 
 				 // helpToolStripMenuItem1
 				 // 
+				 this->helpToolStripMenuItem1->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+					 this->instructToolStripMenuItem,
+						 this->creditsToolStripMenuItem
+				 });
 				 this->helpToolStripMenuItem1->Name = L"helpToolStripMenuItem1";
-				 this->helpToolStripMenuItem1->Size = System::Drawing::Size(44, 20);
-				 this->helpToolStripMenuItem1->Text = L"Help";
+				 this->helpToolStripMenuItem1->Size = System::Drawing::Size(43, 20);
+				 this->helpToolStripMenuItem1->Text = L"Aide";
+				 // 
+				 // instructToolStripMenuItem
+				 // 
+				 this->instructToolStripMenuItem->Name = L"instructToolStripMenuItem";
+				 this->instructToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+				 this->instructToolStripMenuItem->Text = L"Instructions";
+				 // 
+				 // creditsToolStripMenuItem
+				 // 
+				 this->creditsToolStripMenuItem->Name = L"creditsToolStripMenuItem";
+				 this->creditsToolStripMenuItem->Size = System::Drawing::Size(136, 22);
+				 this->creditsToolStripMenuItem->Text = L"Credits";
+				 // 
+				 // texturesToolStripMenuItem
+				 // 
+				 this->texturesToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+					 this->lapinToolStripMenuItem,
+						 this->motifToolStripMenuItem, this->artworkToolStripMenuItem, this->blancToolStripMenuItem
+				 });
+				 this->texturesToolStripMenuItem->Name = L"texturesToolStripMenuItem";
+				 this->texturesToolStripMenuItem->Size = System::Drawing::Size(62, 20);
+				 this->texturesToolStripMenuItem->Text = L"Textures";
+				 // 
+				 // lapinToolStripMenuItem
+				 // 
+				 this->lapinToolStripMenuItem->Name = L"lapinToolStripMenuItem";
+				 this->lapinToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->lapinToolStripMenuItem->Text = L"Lapin";
+				 this->lapinToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::lapinToolStripMenuItem_Click);
+				 // 
+				 // motifToolStripMenuItem
+				 // 
+				 this->motifToolStripMenuItem->Name = L"motifToolStripMenuItem";
+				 this->motifToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->motifToolStripMenuItem->Text = L"Motif";
+				 this->motifToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::motifToolStripMenuItem_Click);
+				 // 
+				 // artworkToolStripMenuItem
+				 // 
+				 this->artworkToolStripMenuItem->Name = L"artworkToolStripMenuItem";
+				 this->artworkToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->artworkToolStripMenuItem->Text = L"Artwork";
+				 this->artworkToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::artworkToolStripMenuItem_Click);
+				 // 
+				 // blancToolStripMenuItem
+				 // 
+				 this->blancToolStripMenuItem->Name = L"blancToolStripMenuItem";
+				 this->blancToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->blancToolStripMenuItem->Text = L"Blanc";
+				 this->blancToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::blancToolStripMenuItem_Click);
 				 // 
 				 // pictureBox1
 				 // 
@@ -303,24 +397,6 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->panel1->Name = L"panel1";
 				 this->panel1->Size = System::Drawing::Size(318, 256);
 				 this->panel1->TabIndex = 4;
-				 // 
-				 // simpleToolStripMenuItem
-				 // 
-				 this->simpleToolStripMenuItem->Name = L"simpleToolStripMenuItem";
-				 this->simpleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-				 this->simpleToolStripMenuItem->Text = L"Simple";
-				 // 
-				 // revolutionToolStripMenuItem
-				 // 
-				 this->revolutionToolStripMenuItem->Name = L"revolutionToolStripMenuItem";
-				 this->revolutionToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-				 this->revolutionToolStripMenuItem->Text = L"Revolution";
-				 // 
-				 // generaliseeToolStripMenuItem
-				 // 
-				 this->generaliseeToolStripMenuItem->Name = L"generaliseeToolStripMenuItem";
-				 this->generaliseeToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-				 this->generaliseeToolStripMenuItem->Text = L"Generalisee";
 				 // 
 				 // Form1
 				 // 
@@ -371,6 +447,44 @@ namespace OpenGL_on_a_Windows_Form {
 	private: System::Void Form1_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
 		std::cout << "iii" << "\n";
 	}
-	};
+	private: System::Void rougeToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		OpenGL2->UpdateColor(1);
+	}
+	private: System::Void bleuToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		OpenGL2->UpdateColor(2);
+	}
+private: System::Void vertToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateColor(3);
+}
+private: System::Void noirToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateColor(4);
+
+}
+private: System::Void violetToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateColor(5);
+}
+
+private: System::Void filaireToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateRenderType(0);
+}
+private: System::Void pleinToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateRenderType(1);
+}
+private: System::Void texturéToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateRenderType(2);
+}
+private: System::Void lapinToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateTexures(0);
+}
+private: System::Void motifToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateTexures(1);
+}
+private: System::Void artworkToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateTexures(2);
+}
+private: System::Void blancToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL2->UpdateTexures(4);
+}
+};
 }
 

@@ -293,5 +293,17 @@ namespace OpenGLForm
 				width, height, flags);
 		}
 
+		void UpdateColor(int c) {
+			colors_menu(c);
+		}
+
+		void UpdateRenderType(int c) {
+			render_menu(c);
+		}
+
+		void UpdateTexures(int c) {
+			textures_menu(c);
+		}
+
 	};
 }
