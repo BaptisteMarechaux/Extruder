@@ -40,6 +40,8 @@ public:
 
 	std::vector<vec3> revolutionExtrude(std::vector<vec3> points, float step, float radius);
 
+	std::vector<vec3> generalExtrude(std::vector<vec3> points, float step);
+
 	std::vector<int> getTriangleIndicesFrom3D(std::vector<vec3> points);
 
 	std::vector<int> getSquareIndicesFrom3D(std::vector<vec3> points);

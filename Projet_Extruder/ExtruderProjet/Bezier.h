@@ -32,4 +32,3 @@ public:
 
 	vec3 deBoor(int k, int degree, int i, float x, std::vector<float> knots, std::vector<vec3> ctrlPoints);
 };
-
