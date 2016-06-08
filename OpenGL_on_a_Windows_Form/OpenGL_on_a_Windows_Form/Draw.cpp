@@ -143,9 +143,10 @@ void Initialize()
 
 		modifying = true;
 
-		//polyMade_menu(1);
+		polyMade_menu(1);
+
 		mode = 1;
-		if (curves[currentCurve].paramPoints.size() < 2) {
+		/*if (curves[currentCurve].paramPoints.size() < 2) {
 			curves[currentCurve].paramPoints.clear();
 			curves[currentCurve].paramPoints.push_back(1);
 			curves[currentCurve].paramPoints.push_back(1);
@@ -162,7 +163,7 @@ void Initialize()
 				curves[currentCurve].controlPoints.clear();
 				curves[currentCurve].controlPoints.clear();
 			}
-		}
+		}*/
 
 		// Chargement des textures
 		ListeTextures[0] = SOIL_load_OGL_texture("tex1.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
@@ -171,6 +172,21 @@ void Initialize()
 		ListeTextures[3] = SOIL_load_OGL_texture("tex4.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 
 		UpdateCam();
+
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 0.0f, 0.0f));
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 0.0f, 1));
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 1, 1));
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 1, 0.0f));
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 0.0f, 1.0f));
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 0.0f, 2));
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 1, 2));
+		curves[currentCurve].drawPoints.push_back(vec3(0.0f, 1, 1.0f));
+
+		curves[currentCurve].texCoordsPoints.push_back(vec2(0.0f, 0.0f));
+		curves[currentCurve].texCoordsPoints.push_back(vec2(1.0f, 0.0f));
+		curves[currentCurve].texCoordsPoints.push_back(vec2(1.0f, 1.0f));
+		curves[currentCurve].texCoordsPoints.push_back(vec2(0.0f, 1.0f));
+
 
 		alreadyInit = true;
 	}
@@ -354,10 +370,9 @@ void DrawRender()
 
 	if (renderType == 1) {
 		glBegin(GL_QUADS);
-		glVertex3f(0.0f, 0.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, 1);
-		glVertex3f(0.0f, 1, 1);
-		glVertex3f(0.0f, 1, 0.0f);
+		for (int i = 0; i < curves[currentCurve].drawPoints.size(); i++) {
+				glVertex3f(curves[currentCurve].drawPoints[i].x, curves[currentCurve].drawPoints[i].y, curves[currentCurve].drawPoints[i].z);
+		}
 		glEnd();
 	}
 
@@ -370,14 +385,10 @@ void DrawRender()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, 0.0f);
-		glTexCoord2f(1.f, 0);
-		glVertex3f(0.0f, 0.0f, 1);
-		glTexCoord2f(1, 1);
-		glVertex3f(0.0f, 1, 1);
-		glTexCoord2f(0, 1.0f);
-		glVertex3f(0.0f, 1, 0.0f);
+		for (int i = 0; i < curves[currentCurve].drawPoints.size() && i < curves[currentCurve].texCoordsPoints.size(); i++) {
+			glTexCoord2f(curves[currentCurve].texCoordsPoints[i].x, curves[currentCurve].texCoordsPoints[i].y);
+			glVertex3f(curves[currentCurve].drawPoints[i].x, curves[currentCurve].drawPoints[i].y, curves[currentCurve].drawPoints[i].z);
+		}
 		glEnd();
 	}
 
@@ -385,14 +396,13 @@ void DrawRender()
 		//On se met en mode ligne (edge)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// On va dessinner de la couleur suivante
-		glColor3f(0.0f, 0.0f, 0.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);
 		// Avec cette epaisseur de trait
 		glLineWidth(2.0f);
 		glBegin(GL_QUADS);
-		glVertex3f(0.0f, 0.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, 1);
-		glVertex3f(0.0f, 1, 1);
-		glVertex3f(0.0f, 1, 0.0f);
+		for (int i = 0; i < curves[currentCurve].drawPoints.size(); i++) {
+				glVertex3f(curves[currentCurve].drawPoints[i].x, curves[currentCurve].drawPoints[i].y, curves[currentCurve].drawPoints[i].z);
+		}
 		glEnd();
 		glLineWidth(1.0f);
 		//glDisable(GL_POLYGON_OFFSET_LINE);
@@ -402,6 +412,7 @@ void DrawRender()
 		//glPolygonOffset(1.0f, 1.0f);
 	}
 
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 
 	glFlush();
@@ -416,14 +427,27 @@ void _mouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  
 		mousex = e->X;
 		mousey = e->Y;
 		vec3 tmpPoint;
-		tmpPoint.x = ((float)mousex - w / 2) / 80;
-		tmpPoint.y = ((float)mousey - h / 2) / 55;
+		tmpPoint.x = ((float)mousex - w / 2) / 150;
+		tmpPoint.y = ((float)mousey - h / 2) / 150;
 		tmpPoint.z = 0;
-		std::cout << e->X << " " << e->Y << " " << tmpPoint.x << " " << tmpPoint.y << "\n";
+		//std::cout << e->X << " " << e->Y << " " << tmpPoint.x << " " << tmpPoint.y << "\n";
 		if (mode == 1) {
-			curves[currentCurve].controlPoints.push_back(tmpPoint);
-			currentParameterSpace.push_back(index += 10);
-			//curves[currentCurve].paramPoints.push_back()
+				if (curves[currentCurve].controlPoints.size() > 2 && sqrt((((float)e->X - w / 2) / 150 - curves[currentCurve].controlPoints[0].x)*(((float)e->X - w / 2) / 150 - curves[currentCurve].controlPoints[0].x) + (((float)e->Y - h / 2) / 150 - curves[currentCurve].controlPoints[0].y)*(((float)e->Y - h / 2) / 150 - curves[currentCurve].controlPoints[0].y)) < 0.1) {
+					tmpPoint.x = curves[currentCurve].controlPoints[0].x;
+					tmpPoint.y = curves[currentCurve].controlPoints[0].y;
+					curves[currentCurve].controlPoints.push_back(tmpPoint);
+					currentParameterSpace.push_back(index += 10);
+					/*CurveObject tmpPoly;
+					tmpPoly.controlPoints = b.Raccord(1, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
+					curves[currentCurve].controlPoints[1].x = tmpPoly.controlPoints[1].x;
+					curves[currentCurve].controlPoints[1].y = tmpPoly.controlPoints[1].y;*/
+					polyMade_menu(1);
+				}
+				else {
+					curves[currentCurve].controlPoints.push_back(tmpPoint);
+					currentParameterSpace.push_back(index += 10);
+					//curves[currentCurve].paramPoints.push_back()
+				}
 		}
 		leftButtonPressed = false;
 	}
@@ -450,7 +474,7 @@ void _mouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^
 		for (int p = 0; p < curves.size(); p++)
 		{
 			for (unsigned int i = 0; i < curves[p].controlPoints.size(); i++) {
-				if (sqrt((((float)e->X - w / 2) / 80 - curves[p].controlPoints[i].x)*(((float)e->X - w / 2) / 80 - curves[p].controlPoints[i].x) + (((float)e->Y - h / 2) / 55 - curves[p].controlPoints[i].y)*(((float)e->Y - h / 2) / 55 - curves[p].controlPoints[i].y)) < 0.1) {
+				if (sqrt((((float)e->X - w / 2) / 150 - curves[p].controlPoints[i].x)*(((float)e->X - w / 2) / 150 - curves[p].controlPoints[i].x) + (((float)e->Y - h / 2) / 150 - curves[p].controlPoints[i].y)*(((float)e->Y - h / 2) / 150 - curves[p].controlPoints[i].y)) < 0.1) {
 					indexOfModifyingPoly = p;
 					indexOfModifyingPoint = i;
 					modifyingMode = 1;
@@ -465,7 +489,7 @@ void _mouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^
 		{
 			for (unsigned int i = 0; i < curves[p].splineControlPoints.size(); i++) {
 				for (unsigned int j = 0; j < curves[p].splineControlPoints[i].size(); j++) {
-					if (sqrt((((float)e->X - w / 2) / 80 - curves[p].splineControlPoints[i][j].x)*(((float)e->X - w / 2) / 80 - curves[p].splineControlPoints[i][j].x) + (((float)e->Y - h / 2) / 55 - curves[p].splineControlPoints[i][j].y)*(((float)e->Y - h / 2) / 55 - curves[p].splineControlPoints[i][j].y)) < 0.1) {
+					if (sqrt((((float)e->X - w / 2) / 150 - curves[p].splineControlPoints[i][j].x)*(((float)e->X - w / 2) / 150 - curves[p].splineControlPoints[i][j].x) + (((float)e->Y - h / 2) / 150 - curves[p].splineControlPoints[i][j].y)*(((float)e->Y - h / 2) / 150 - curves[p].splineControlPoints[i][j].y)) < 0.1) {
 						indexOfModifyingPoly2 = p;
 						indexOfModifyingSpline.push_back(i);
 						indexOfModifyingSplinePoint.push_back(j);
@@ -485,13 +509,13 @@ void _mouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^
 void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 	if (modifying && leftButtonPressed) {
 		if (modifyingMode == 1) {
-			curves[indexOfModifyingPoly].controlPoints[indexOfModifyingPoint].x = ((float)e->X - w / 2) / 80;
-			curves[indexOfModifyingPoly].controlPoints[indexOfModifyingPoint].y = ((float)e->Y - h / 2) / 55;
+			curves[indexOfModifyingPoly].controlPoints[indexOfModifyingPoint].x = ((float)e->X - w / 2) / 150;
+			curves[indexOfModifyingPoly].controlPoints[indexOfModifyingPoint].y = ((float)e->Y - h / 2) / 150;
 		}
 		if (modifyingMode2 == 1) {
 			for (unsigned int i = 0; i < indexOfModifyingSpline.size(); i++) {
-				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].x = ((float)e->X - w / 2) / 80;
-				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].y = ((float)e->Y - h / 2) / 55;
+				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].x = ((float)e->X - w / 2) / 150;
+				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].y = ((float)e->Y - h / 2) / 150;
 			}
 		}
 	}
@@ -541,7 +565,7 @@ void UpdateCam() {
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glLoadIdentity();									// Reset The Projection Matrix
 
-	gluPerspective(45.0f, (GLfloat)442 / (GLfloat)510, 0.1f, 100.0f);
+	gluPerspective(45.0f, (GLfloat)600 / (GLfloat)600, 0.1f, 100.0f);
 
 	gluLookAt(draw::camera_x * draw::zoom, draw::camera_y * draw::zoom, draw::camera_z * draw::zoom, draw::x_direction, draw::y_direction, draw::z_direction, 0.0, 1.0, 0.0);
 
@@ -899,9 +923,7 @@ void polyMade_menu(int option) {
 		break;
 	}
 
-	modifying = false;
-
-	glutPostRedisplay();
+	//modifying = false;
 }
 
 // Menu doption supplémentaires
@@ -929,7 +951,6 @@ void option_menu(int option) {
 		showCredits = !showCredits;
 		break;
 	}
-	glutPostRedisplay();
 }
 
 // Initialise le menu
@@ -942,21 +963,6 @@ void initMenu() {
 
 	// Liste des index des sous menus
 	GLint colorsMenu, polyMadeMenu, modMenu, propMenu, optionMenu;
-
-	// Menu pour changer la couleur
-	colorsMenu = glutCreateMenu(colors_menu);
-	// Liste des couleurs disponibles
-	glutAddMenuEntry("Rouge", 1);
-	glutAddMenuEntry("Bleu", 2);
-	glutAddMenuEntry("Vert", 3);
-	glutAddMenuEntry("Noir", 4);
-	glutAddMenuEntry("Violet", 5);
-
-	polyMadeMenu = glutCreateMenu(polyMade_menu);
-	glutAddMenuEntry("Courbe de Bezier", 1);
-	glutAddMenuEntry("Raccordement C0", 2);
-	glutAddMenuEntry("Raccordement C1", 3);
-	glutAddMenuEntry("Raccordement C2", 4);
 
 	propMenu = glutCreateMenu(prop_menu);
 	glutAddMenuEntry("Espace de paramétrage", 1);
