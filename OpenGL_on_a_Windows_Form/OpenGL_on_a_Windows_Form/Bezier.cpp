@@ -283,7 +283,7 @@ std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, 
 
 	std::vector<int> indices;
 	for (int i = 0; i < points.size(); i++) {
-		newPoints.push_back(vec3(points[i].x, points[i].y, points[i].z+length));
+		newPoints.push_back(vec3(points[i].x, points[i].y + length, points[i].z));
 	}
 
 	for (int i = i; i < newPoints.size()-1; i++) {
@@ -326,6 +326,7 @@ std::vector<vec3> Bezier::revolutionExtrude(std::vector<vec3> points, float step
 		
 	}
 
+	//Trouver les indices de triangle
 	for (int i = 1; i < newPoints.size()-1; i++) {
 		if (i % 2 == 0) {
 			//indices.push_back()
@@ -340,8 +341,56 @@ std::vector<vec3> Bezier::revolutionExtrude(std::vector<vec3> points, float step
 	return newPoints;
 }
 
-std::vector<vec3> Bezier::generalExtrude(std::vector<vec3> points, float step)
+std::vector<vec3> Bezier::generalExtrude(std::vector<vec3> points, std::vector<vec3> linePoints, float step)
 {
+	std::vector<vec3> newPoints;
+	vec3 vecTotal = vec3(0,0,0);
+
+	std::vector<int> indices; //indices en Quad
+	for (int i = 0; i < points.size(); i++) {
+		vecTotal.x += points[i].x;
+		vecTotal.y += points[i].y;
+		vecTotal.z += points[i].z;
+	}
+	vecTotal /= points.size();
+
+	vec3 difference = vec3(0,0,0);
+
+	if (linePoints.size() > 0) {
+		difference.x = vecTotal.x - linePoints[0].x;
+		difference.y = vecTotal.y - linePoints[0].y;
+		difference.z = vecTotal.z - linePoints[0].z;
+	}
+
+	for (int i = 0; i < linePoints.size(); i++) {
+		linePoints[i] += difference;
+		for (int j = 0; j < points.size(); j++) {
+			if (i < 1) {
+				newPoints.push_back(vec3(points[j].x, points[j].y, points[j].z));
+			}
+			else if (i < linePoints.size() - 1) {
+				newPoints.push_back(vec3(points[j].x - (linePoints[i].x-linePoints[i-1].x), points[j].y - (linePoints[i].y - linePoints[i - 1].y), points[j].z - (linePoints[i].z - linePoints[i - 1].z)));
+			}
+			else
+			{
+				newPoints.push_back(vec3(points[j].x - (linePoints[i].x - linePoints[i - 1].x), points[j].y - (linePoints[i].y - linePoints[i - 1].y), points[j].z - (linePoints[i].z - linePoints[i - 1].z)));
+			}
+			
+		}
+		
+	}
+	auto _size = points.size();
+	for (int i = 0; i < newPoints.size()-points.size(); i++) {
+		if (i%_size != 0) {
+			indices.push_back(i);
+			indices.push_back(i + 1);
+			indices.push_back(i + 1 + _size);
+			indices.push_back(i+_size);
+		}
+		
+	}
+	
+
 	return std::vector<vec3>();
 }
 
