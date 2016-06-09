@@ -282,8 +282,9 @@ std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, 
 	std::vector<vec3> newPoints = std::vector<vec3>();
 
 	std::vector<int> indices;
-	for (int i = 0; i < points.size(); i++) {
-		newPoints.push_back(vec3(points[i].x, points[i].y + length, points[i].z));
+	for (int i = 0; i < points.size(); i+=2) {
+		newPoints.push_back(vec3(points[i].x, points[i].z, points[i].y));
+		newPoints.push_back(vec3(points[i].x, points[i].z + length, points[i].y));
 	}
 
 	for (int i = i; i < newPoints.size()-1; i++) {
