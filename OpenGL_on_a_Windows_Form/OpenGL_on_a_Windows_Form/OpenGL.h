@@ -297,12 +297,19 @@ namespace OpenGLForm
 			colors_menu(c);
 		}
 
-		void UpdateRenderType(int c) {
-			render_menu(c);
+		void UpdateRenderType(int v) {
+			render_menu(v);
 		}
 
-		void UpdateTexures(int c) {
-			textures_menu(c);
+		void UpdateTexures(int v) {
+			textures_menu(v);
+		}
+
+		void UpdatePoly(int v) {
+			polyMade_menu(v);
+		}
+		void UpdateOptions(int v) {
+			option_menu(v);
 		}
 
 	};

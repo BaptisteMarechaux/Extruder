@@ -14,10 +14,15 @@ public:
 	vector<vector<glm::vec3>> splineControlPoints;
 	vector<vector<glm::vec3>> splineCurvePoints;
 	vector<int> paramPoints;
+	vector<glm::vec3> drawPoints;
+	vector<glm::vec2> texCoordsPoints;
+	vector<glm::vec3> soulPoints;
 
 	CurveObject() {
 		controlPoints = vector<glm::vec3>();
 		curvePoints = vector<glm::vec3>();
+		drawPoints = vector<glm::vec3>();
+		texCoordsPoints = vector<glm::vec2>();
 	}
 };
 
@@ -59,4 +64,6 @@ void UpdateCam();
 void colors_menu(int option);
 void render_menu(int option);
 void textures_menu(int option);
+void polyMade_menu(int option);
+void option_menu(int option);
 
