@@ -103,6 +103,7 @@ int index = 0;
 
 int w = 800, h = 600;
 bool alreadyInit = false;
+bool alreadyLoadTextures = false;
 
 int rotLight1 = 0;
 
@@ -165,11 +166,15 @@ void Initialize()
 			}
 		}*/
 
-		// Chargement des textures
-		ListeTextures[0] = SOIL_load_OGL_texture("tex1.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-		ListeTextures[1] = SOIL_load_OGL_texture("tex2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-		ListeTextures[2] = SOIL_load_OGL_texture("tex3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-		ListeTextures[3] = SOIL_load_OGL_texture("tex4.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+		if (alreadyLoadTextures == false) {
+			// Chargement des textures
+			ListeTextures[0] = SOIL_load_OGL_texture("tex1.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+			ListeTextures[1] = SOIL_load_OGL_texture("tex2.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+			ListeTextures[2] = SOIL_load_OGL_texture("tex3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+			ListeTextures[3] = SOIL_load_OGL_texture("tex4.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+
+			alreadyLoadTextures = true;
+		}
 
 		UpdateCam();
 
@@ -186,7 +191,6 @@ void Initialize()
 		curves[currentCurve].texCoordsPoints.push_back(vec2(1.0f, 0.0f));
 		curves[currentCurve].texCoordsPoints.push_back(vec2(1.0f, 1.0f));
 		curves[currentCurve].texCoordsPoints.push_back(vec2(0.0f, 1.0f));
-
 
 		alreadyInit = true;
 	}
@@ -949,10 +953,11 @@ void option_menu(int option) {
 			curves[p].curvePoints.clear();
 		}
 		curves.clear();
-		currentCurve = 0;
-		Initialize();
-		indexPolyMode = 3;
+		//currentCurve = 0;
 		mode = 0;
+		alreadyInit = false;
+		Initialize();
+		//indexPolyMode = 3;
 		break;
 		// Affiche les crédits
 	case 4:
