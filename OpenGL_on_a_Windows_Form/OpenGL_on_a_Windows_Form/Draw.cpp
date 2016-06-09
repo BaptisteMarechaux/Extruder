@@ -530,7 +530,14 @@ void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs
 
 		if (e->Y != oldMousey) {
 			draw::camera_y = sin(draw::camAngle);
+			//draw::camera_z = cos(draw::camAngle);
 			draw::y_direction = -sin(draw::camAngle);
+			//draw::z_direction = -cos(draw::camAngle);
+
+			if ((e->Y - oldMousey) > 0)             // mouse moved to the right
+				draw::camAngle += 0.005f;
+			else if ((e->Y - oldMousey) < 0)     // mouse moved to the left
+				draw::camAngle -= 0.005f;
 		}
 		if (e->X != oldMousex)
 		{
@@ -540,9 +547,9 @@ void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs
 			draw::z_direction = -sin(draw::camAngle);
 
 			if ((e->X - oldMousex) > 0)             // mouse moved to the right
-			draw::camAngle += 0.01f;
+			draw::camAngle += 0.005f;
 			else if ((e->X - oldMousex) < 0)     // mouse moved to the left
-			draw::camAngle -= 0.01f;
+			draw::camAngle -= 0.005f;
 
 		}
 
@@ -567,7 +574,8 @@ void UpdateCam() {
 
 	gluPerspective(45.0f, (GLfloat)600 / (GLfloat)600, 0.1f, 100.0f);
 
-	gluLookAt(draw::camera_x * draw::zoom, draw::camera_y * draw::zoom, draw::camera_z * draw::zoom, draw::x_direction, draw::y_direction, draw::z_direction, 0.0, 1.0, 0.0);
+	gluLookAt(draw::camera_x * draw::zoom, draw::camera_y * draw::zoom, draw::camera_z * draw::zoom, 
+		draw::x_direction, draw::y_direction, draw::z_direction, 0.0, 1.0, 0.0);
 
 
 	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
