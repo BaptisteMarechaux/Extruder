@@ -279,13 +279,14 @@ std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, 
 {
 	last2DCurvePointsCount = points.size();
 	std::vector<vec3> newPoints = std::vector<vec3>();
+	vec3 bar = getBarycenter(points);
 
 	std::vector<int> indices;
 	for (int i = 0; i < points.size()-1; i++) {
 		newPoints.push_back(vec3(points[i].x, points[i].z, points[i].y));
 		newPoints.push_back(vec3(points[i+1].x, points[i+1].z, points[i+1].y));
-		newPoints.push_back(vec3(points[i+1].x, points[i+1].z + length, points[i+1].y));
-		newPoints.push_back(vec3(points[i].x, points[i].z + length, points[i].y));
+		newPoints.push_back(vec3(points[i+1].x + scale*(points[i + 1].x -bar.x), points[i+1].z + length, points[i+1].y + scale*(points[i + 1].y - bar.y)));
+		newPoints.push_back(vec3(points[i].x + scale*(points[i].x - bar.x), points[i].z + length, points[i].y + scale*(points[i].y - bar.y) ));
 	}
 
 	return newPoints;

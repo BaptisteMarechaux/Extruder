@@ -88,6 +88,7 @@ Bezier b = Bezier();
 vector<glm::vec3> casPoints = vector<glm::vec3>();
 
 
+
 float tMatrix[16] = { 1,0,0,10, 0,1,0,10, 0,0,1,10, 0,0,0,10 };
 float ntMatrix[16] = { 1,0,0,-10, 0,1,0,-10, 0,0,1,-10, 0,0,0,-10 };
 float rMatrix[16] = { cos(1 * PI / 180.0),-sin(1 * PI / 180.0),0,0, sin(1 * PI / 180.0),cos(1 * PI / 180.0),0,0, 0,0,1,0, 0,0,0,1 };
@@ -210,8 +211,8 @@ void DrawRender()
 		{
 			if (curves[p].controlPoints.size() >= 4) {
 				curves[p].curvePoints = b.CasteljauBezier(curves[p].controlPoints, nStep, currentParameterSpace);
-				//curves[p].drawPoints = b.simpleExtrude(curves[p].curvePoints, 3, 1, 1);
-				curves[p].drawPoints = b.revolutionExtrude(curves[p].curvePoints, 0.1f, 3);
+				curves[p].drawPoints = b.simpleExtrude(curves[p].curvePoints, 3, 1, 2);
+				//curves[p].drawPoints = b.revolutionExtrude(curves[p].curvePoints, 0.1f, 3);
 			}
 
 			if (curves[p].soulControlPoints.size() >= 4) {

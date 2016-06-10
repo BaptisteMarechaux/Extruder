@@ -102,6 +102,10 @@ namespace OpenGL_on_a_Windows_Form {
 	private: System::Windows::Forms::ToolStripMenuItem^  raccordementC2ToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  remiseAZeroToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  ameToolStripMenuItem;
+	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::TextBox^  extrusionTextBox;
+	private: System::Windows::Forms::TextBox^  extrusionScaleTextBox;
+	private: System::Windows::Forms::Label^  label2;
 			 OpenGLForm::COpenGL ^ OpenGL2;
 
 
@@ -152,6 +156,10 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->creditsToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				 this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 				 this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
+				 this->label1 = (gcnew System::Windows::Forms::Label());
+				 this->extrusionTextBox = (gcnew System::Windows::Forms::TextBox());
+				 this->extrusionScaleTextBox = (gcnew System::Windows::Forms::TextBox());
+				 this->label2 = (gcnew System::Windows::Forms::Label());
 				 this->menuStrip1->SuspendLayout();
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 				 (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
@@ -294,8 +302,9 @@ namespace OpenGL_on_a_Windows_Form {
 				 // simpleToolStripMenuItem
 				 // 
 				 this->simpleToolStripMenuItem->Name = L"simpleToolStripMenuItem";
-				 this->simpleToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+				 this->simpleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 				 this->simpleToolStripMenuItem->Text = L"Simple";
+				 this->simpleToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::simpleToolStripMenuItem_Click);
 				 // 
 				 // revolutionToolStripMenuItem
 				 // 
@@ -405,14 +414,14 @@ namespace OpenGL_on_a_Windows_Form {
 				 // instructToolStripMenuItem
 				 // 
 				 this->instructToolStripMenuItem->Name = L"instructToolStripMenuItem";
-				 this->instructToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->instructToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 				 this->instructToolStripMenuItem->Text = L"Instructions";
 				 this->instructToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::instructToolStripMenuItem_Click);
 				 // 
 				 // creditsToolStripMenuItem
 				 // 
 				 this->creditsToolStripMenuItem->Name = L"creditsToolStripMenuItem";
-				 this->creditsToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->creditsToolStripMenuItem->Size = System::Drawing::Size(136, 22);
 				 this->creditsToolStripMenuItem->Text = L"Credits";
 				 this->creditsToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::creditsToolStripMenuItem_Click);
 				 // 
@@ -433,11 +442,50 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->pictureBox2->TabStop = false;
 				 this->pictureBox2->PreviewKeyDown += gcnew System::Windows::Forms::PreviewKeyDownEventHandler(this, &Form1::pictureBox2_PreviewKeyDown);
 				 // 
+				 // label1
+				 // 
+				 this->label1->AutoSize = true;
+				 this->label1->Location = System::Drawing::Point(32, 428);
+				 this->label1->Name = L"label1";
+				 this->label1->Size = System::Drawing::Size(96, 13);
+				 this->label1->TabIndex = 4;
+				 this->label1->Text = L"Taille de l\'extrusion";
+				 // 
+				 // extrusionTextBox
+				 // 
+				 this->extrusionTextBox->Location = System::Drawing::Point(32, 452);
+				 this->extrusionTextBox->Name = L"extrusionTextBox";
+				 this->extrusionTextBox->Size = System::Drawing::Size(95, 20);
+				 this->extrusionTextBox->TabIndex = 5;
+				 this->extrusionTextBox->Text = L"1";
+				 this->extrusionTextBox->TextChanged += gcnew System::EventHandler(this, &Form1::extrusionTextBox_TextChanged);
+				 // 
+				 // extrusionScaleTextBox
+				 // 
+				 this->extrusionScaleTextBox->Location = System::Drawing::Point(32, 511);
+				 this->extrusionScaleTextBox->Name = L"extrusionScaleTextBox";
+				 this->extrusionScaleTextBox->Size = System::Drawing::Size(95, 20);
+				 this->extrusionScaleTextBox->TabIndex = 7;
+				 this->extrusionScaleTextBox->Text = L"1";
+				 // 
+				 // label2
+				 // 
+				 this->label2->AutoSize = true;
+				 this->label2->Location = System::Drawing::Point(32, 487);
+				 this->label2->Name = L"label2";
+				 this->label2->Size = System::Drawing::Size(98, 13);
+				 this->label2->TabIndex = 6;
+				 this->label2->Text = L"Scale de l\'extrusion";
+				 // 
 				 // Form1
 				 // 
 				 this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 				 this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 				 this->ClientSize = System::Drawing::Size(1241, 640);
+				 this->Controls->Add(this->extrusionScaleTextBox);
+				 this->Controls->Add(this->label2);
+				 this->Controls->Add(this->extrusionTextBox);
+				 this->Controls->Add(this->label1);
 				 this->Controls->Add(this->pictureBox2);
 				 this->Controls->Add(this->pictureBox1);
 				 this->Controls->Add(this->menuStrip1);
@@ -557,6 +605,10 @@ private: System::Void instructToolStripMenuItem_Click(System::Object^  sender, S
 		MessageBoxButtons::OK) == ::DialogResult::OK)
 	{
 	}
+}
+private: System::Void extrusionTextBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void simpleToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 }
 };
 }
