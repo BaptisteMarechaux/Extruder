@@ -16,6 +16,7 @@ public:
 	vector<int> paramPoints;
 	vector<glm::vec3> drawPoints;
 	vector<glm::vec2> texCoordsPoints;
+	vector<glm::vec3> soulControlPoints;
 	vector<glm::vec3> soulPoints;
 
 	CurveObject() {

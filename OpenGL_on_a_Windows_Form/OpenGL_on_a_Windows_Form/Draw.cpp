@@ -214,7 +214,11 @@ void DrawRender()
 				curves[p].drawPoints = b.revolutionExtrude(curves[p].curvePoints, 0.1f, 3);
 			}
 
-			glColor3f(0.0f, 0.0f, 0.5f);
+			if (curves[p].soulControlPoints.size() >= 4) {
+				curves[p].soulPoints = b.CasteljauBezier(curves[p].soulControlPoints, nStep, currentParameterSpace);
+			}
+
+			glColor3f(0.0f, 0.0f, 0.7f);
 			glLoadIdentity();
 			glBegin(GL_POINTS);
 			for (int i = 0; i < curves[p].controlPoints.size(); i++) {
@@ -225,6 +229,21 @@ void DrawRender()
 			glBegin(GL_LINE_STRIP);//POINTS
 			for (int i = 0; i < curves[p].controlPoints.size(); i++) {
 				glVertex3d(curves[p].controlPoints[i].x, curves[p].controlPoints[i].z, curves[p].controlPoints[i].y);
+			}
+			glEnd();
+
+			glColor3f(0.0f, 0.0f, 0.2f);
+			// Soul
+			glLoadIdentity();
+			glBegin(GL_POINTS);
+			for (int i = 0; i < curves[p].soulControlPoints.size(); i++) {
+				glVertex3d(curves[p].soulControlPoints[i].x, curves[p].soulControlPoints[i].z, curves[p].soulControlPoints[i].y);
+			}
+			glEnd();
+			glLoadIdentity();
+			glBegin(GL_LINE_STRIP);//POINTS
+			for (int i = 0; i < curves[p].soulControlPoints.size(); i++) {
+				glVertex3d(curves[p].soulControlPoints[i].x, curves[p].soulControlPoints[i].z, curves[p].soulControlPoints[i].y);
 			}
 			glEnd();
 
@@ -246,11 +265,12 @@ void DrawRender()
 				glColor3fv(purpleColor);
 				break;
 			}
-			glBegin(GL_TRIANGLE_STRIP);
+			glBegin(GL_LINE_STRIP);
 			for (int i = 0; i < curves[p].curvePoints.size(); i++) {
 				glVertex3d(curves[p].curvePoints[i].x, 0, curves[p].curvePoints[i].y);
 			}
 			glEnd();
+
 
 			if (curves[p].splineCurvePoints.size() == 0) {
 				for (int i = 0; i < curves[p].splineControlPoints.size(); i++) {
@@ -280,6 +300,14 @@ void DrawRender()
 				}
 				glEnd();
 			}
+
+			// Soul
+			glColor3fv(purpleColor);
+			glBegin(GL_LINE_STRIP);
+			for (int i = 0; i < curves[p].soulPoints.size(); i++) {
+				glVertex3d(curves[p].soulPoints[i].x, 0, curves[p].soulPoints[i].y);
+			}
+			glEnd();
 		}
 		break;
 
@@ -443,18 +471,25 @@ void _mouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  
 					tmpPoint.y = curves[currentCurve].controlPoints[0].y;
 					curves[currentCurve].controlPoints.push_back(tmpPoint);
 					currentParameterSpace.push_back(index += 10);
-					/*CurveObject tmpPoly;
+					CurveObject tmpPoly;
 					tmpPoly.controlPoints = b.Raccord(1, curves[currentCurve].controlPoints, curves[currentCurve].paramPoints);
 					curves[currentCurve].controlPoints[1].x = tmpPoly.controlPoints[1].x;
-					curves[currentCurve].controlPoints[1].y = tmpPoly.controlPoints[1].y;*/
-					polyMade_menu(1);
+					curves[currentCurve].controlPoints[1].y = tmpPoly.controlPoints[1].y;
+					//polyMade_menu(1);
 				}
 				else {
 					curves[currentCurve].controlPoints.push_back(tmpPoint);
-					currentParameterSpace.push_back(index += 10);
+					if (currentParameterSpace.size() < curves[currentCurve].controlPoints.size())
+						currentParameterSpace.push_back(index += 10);
 					//curves[currentCurve].paramPoints.push_back()
 				}
 		}
+		else if (mode == 2) {
+			curves[currentCurve].soulControlPoints.push_back(tmpPoint);
+			if(currentParameterSpace.size() < curves[currentCurve].soulControlPoints.size())
+				currentParameterSpace.push_back(index += 10);
+		}
+
 		leftButtonPressed = false;
 	}
 
@@ -506,6 +541,18 @@ void _mouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^
 				}
 			}
 		}
+		for (int p = 0; p < curves.size(); p++)
+		{
+			for (unsigned int i = 0; i < curves[p].soulControlPoints.size(); i++) {
+				if (sqrt((((float)e->X - w / 2) / 150 - curves[p].soulControlPoints[i].x)*(((float)e->X - w / 2) / 150 - curves[p].soulControlPoints[i].x) + (((float)e->Y - h / 2) / 150 - curves[p].soulControlPoints[i].y)*(((float)e->Y - h / 2) / 150 - curves[p].soulControlPoints[i].y)) < 0.1) {
+					indexOfModifyingPoly = p;
+					indexOfModifyingPoint = i;
+					modifyingMode = 2;
+					leftButtonPressed = true;
+					break;
+				}
+			}
+		}
 	}
 	if (e->Button == System::Windows::Forms::MouseButtons::Right) {
 		leftButtonRealPressed = true;
@@ -523,6 +570,11 @@ void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs
 				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].x = ((float)e->X - w / 2) / 150;
 				curves[indexOfModifyingPoly2].splineControlPoints[indexOfModifyingSpline[i]][indexOfModifyingSplinePoint[i]].y = ((float)e->Y - h / 2) / 150;
 			}
+		}
+		// Soul
+		if (modifyingMode == 2) {
+			curves[indexOfModifyingPoly].soulControlPoints[indexOfModifyingPoint].x = ((float)e->X - w / 2) / 150;
+			curves[indexOfModifyingPoly].soulControlPoints[indexOfModifyingPoint].y = ((float)e->Y - h / 2) / 150;
 		}
 	}
 
@@ -889,17 +941,17 @@ void polyMade_menu(int option) {
 		// Nettoie la fenêtre et les structures
 	case 1:
 		if (curves.size() != 0) {
-			if (curves[currentCurve].controlPoints.size() > 3) {
+			/*if (curves[currentCurve].controlPoints.size() > 3) {
 				CurveObject tmpPoly;
 				curves.push_back(tmpPoly);
 				polyColor.push_back(2);
 				currentCurve++;
 			}
 			else
-			{
+			{*/
 				curves[currentCurve].controlPoints.clear();
 				curves[currentCurve].controlPoints.clear();
-			}
+			//}
 			break;
 		}
 	case 2:
@@ -935,6 +987,15 @@ void polyMade_menu(int option) {
 			}
 		}
 		break;
+	case 5:
+		if (curves.size() != 0) {
+			mode = 2;
+			//if (curves[currentCurve].soulControlPoints.size() < 3) {
+				curves[currentCurve].soulControlPoints.clear();
+				curves[currentCurve].soulControlPoints.clear();
+			//}
+			break;
+		}
 	}
 
 	//modifying = false;
@@ -953,6 +1014,8 @@ void option_menu(int option) {
 		{
 			curves[p].controlPoints.clear();
 			curves[p].curvePoints.clear();
+			curves[p].soulControlPoints.clear();
+			curves[p].soulPoints.clear();
 		}
 		curves.clear();
 		//currentCurve = 0;
