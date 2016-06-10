@@ -325,36 +325,36 @@ std::vector<vec3> Bezier::generalExtrude(std::vector<vec3> points, std::vector<v
 
 	std::vector<int> indices; //indices en Quad
 
-	for (int i = 0; i < linePoints.size()-1; i++) {
+	for (int i = 0; i < points.size()-1; i++) {
 		//linePoints[i] += difference;
-		for (int j = 0; j < points.size()-1; j++) {
+		for (int j = 0; j < linePoints.size()-1; j++) {
 			
-			if (i < 1) {
+			if (j < 1) {
 				//
-				vec3 diff = linePoints[i + 1] - linePoints[i];
-				newPoints.push_back(vec3(points[j].x, points[j].y, points[j].z));
+				vec3 diff = linePoints[j + 1] - linePoints[j];
+				newPoints.push_back(vec3(points[i].x, points[i].z, points[i].y));
 
-				newPoints.push_back(points[j] + diff);
+				newPoints.push_back(vec3(points[i].x+diff.x, points[i].z+diff.z, points[i].y+diff.z));
 
-				newPoints.push_back(points[j + 1] + diff);
+				newPoints.push_back(vec3(points[i + 1].x+ diff.x, points[i + 1].z+ diff.z, points[i + 1].y+ diff.y));
 
-				newPoints.push_back(points[j + 1]);
+				newPoints.push_back(vec3(points[i+1].x, points[i+1].z, points[i+1].y));
 				
 			}
 			else {
 
-				vec3 diff = linePoints[i] - linePoints[i-1];
-				vec3 secDiff = linePoints[i+1] - linePoints[i];
+				vec3 diff = linePoints[j] - linePoints[j-1];
+				vec3 secDiff = linePoints[j+1] - linePoints[j];
 
-				std::cout << linePoints[i].x << ";" << linePoints[i].y << ";" << linePoints[i].z << std::endl;
+				//std::cout << linePoints[i].x << ";" << linePoints[i].y << ";" << linePoints[i].z << std::endl;
 
-				newPoints.push_back(points[j] + diff);
+				newPoints.push_back(vec3(points[i].x+diff.x, points[i].z+ diff.z, points[i].y+ diff.y));
 
-				newPoints.push_back(points[j] + secDiff);
+				newPoints.push_back(vec3(points[i].x + secDiff.x, points[i].z + secDiff.z, points[i].y + secDiff.y));
 
-				newPoints.push_back(points[j + 1] + secDiff);
+				newPoints.push_back(vec3(points[i + 1].x + secDiff.x, points[i + 1].z + secDiff.z, points[i + 1].y + secDiff.y));
 
-				newPoints.push_back(points[j+1] + diff);
+				newPoints.push_back(vec3(points[i+1].x + diff.x, points[i+1].z + diff.z, points[i+1].y + diff.y));
 			}
 	
 			
