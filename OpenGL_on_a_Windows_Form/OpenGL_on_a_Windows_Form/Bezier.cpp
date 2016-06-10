@@ -275,70 +275,45 @@ vec3 Bezier::deBoor(int k, int degree, int i, float x, std::vector<float> knots,
 	return vec3();
 }
 
-//Faire le découpage en triangle immédiatement après avoir obtenu le 
-std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, float step) //Type de retour à changer en Curve3D
+std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, float step, float scale)
 {
 	last2DCurvePointsCount = points.size();
 	std::vector<vec3> newPoints = std::vector<vec3>();
 
 	std::vector<int> indices;
-	for (int i = 0; i < points.size(); i+=2) {
+	for (int i = 0; i < points.size()-1; i++) {
 		newPoints.push_back(vec3(points[i].x, points[i].z, points[i].y));
+		newPoints.push_back(vec3(points[i+1].x, points[i+1].z, points[i+1].y));
+		newPoints.push_back(vec3(points[i+1].x, points[i+1].z + length, points[i+1].y));
 		newPoints.push_back(vec3(points[i].x, points[i].z + length, points[i].y));
 	}
 
-	for (int i = i; i < newPoints.size()-1; i++) {
-		if (i % 2 == 0) {
-			indices.push_back(i - 1);
-			indices.push_back(i);
-			indices.push_back(i + 1);
-		}
-		else
-		{
-			indices.push_back(i - 1);
-			indices.push_back(i+1);
-			indices.push_back(i);
-		}
-		
-	}
 	return newPoints;
 }
 
-std::vector<vec3> Bezier::revolutionExtrude(std::vector<vec3> points, float step, float radius) //type de retour à changer en Curve3D
+std::vector<vec3> Bezier::revolutionExtrude(std::vector<vec3> points, float step, float radius)
 {
 	std::vector<vec3> newPoints = std::vector<vec3>();
-	vector<int> width = vector<int>(points.size()); //Va déterminer combien de vertices il y a sur une ligne
-
 	vector<int> indices;
-	for (int i = 0; i < points.size(); i++) {
-		if (i > 0 && i < points.size() - 1) {
-			width[i] = 0;
-			for (float j = 0; j < 2 * PI; j += step) {
-				width[i] +=1;
-				//Eventuellement changer d'axe pour avoir une rotation correcte
-
+	for (int i = 0; i < points.size()-1; i++) {
+		for (float j = 0; j < 2 * PI - step; j += step) {
+			if (j > 0) {
+				newPoints.push_back(vec3(points[i].x * cos(j), points[i].x*sin(j), points[i].y));
+				newPoints.push_back(vec3(points[i + 1].x * cos(j), points[i + 1].x*sin(j), points[i + 1].y));
+				newPoints.push_back(vec3(points[i + 1].x * cos(j+step), points[i + 1].x*sin(j+step), points[i + 1].y));
+				newPoints.push_back(vec3(points[i].x * cos(j+step), points[i].x*sin(j+step), points[i].y));
+			}
+			else {
+				newPoints.push_back(vec3(points[i].x, points[i].z, points[i].y));
+				newPoints.push_back(vec3(points[i + 1].x, points[i + 1].z, points[i + 1].y));
+				newPoints.push_back(vec3(points[i + 1].x * cos(j), points[i + 1].x*sin(j), points[i + 1].y));
 				newPoints.push_back(vec3(points[i].x * cos(j), points[i].x*sin(j), points[i].y));
 			}
+			
+			
 		}
-		else
-		{
-			newPoints.push_back(points[i]);
-		}
-		
 	}
 
-	//Trouver les indices de triangle
-	for (int i = 1; i < newPoints.size()-1; i++) {
-		if (i % 2 == 0) {
-			//indices.push_back()
-			indices.push_back(i);
-		}
-		else
-		{
-			indices.push_back(i);
-		}
-		
-	}
 	return newPoints;
 }
 
@@ -395,16 +370,50 @@ std::vector<vec3> Bezier::generalExtrude(std::vector<vec3> points, std::vector<v
 	return std::vector<vec3>();
 }
 
-//Faire un nouveau calculs de triangles directement dans la fonction de révolution : On calcule les nouveaux sommets dans une struct Curve3D (qu'on va ensuite renvoyer)
-//on peut ensuite se servir du résultat envoyé pour utiliser des fonctions OPENGL dessus.
-
-std::vector<int> Bezier::getTriangleIndicesFrom3D(std::vector<vec3> points)
+std::vector<vec3> Bezier::getFirstPointsFromSimpleExtrude(std::vector<vec3> points, float length, float step, float scale)
 {
-	vector<int> triangleList;
-	for (int i = 0; i < points.size(); i++) {
-		triangleList.push_back(i);
-		triangleList.push_back(i + 1);
-		triangleList.push_back(i + last2DCurvePointsCount);
+	std::vector<vec3> res = std::vector<vec3>();
+	//res.push_back(getBarycenter[points]); //envoie le barycentre si besoin
+	res.push_back(points[0]);
+	res.push_back(points[points.size() - 1]);
+	return res;
+}
+
+std::vector<vec3> Bezier::getLastPointsFromSimpleExtrude(std::vector<vec3> points, float length, float step, float scale)
+{
+	std::vector<vec3> res = std::vector<vec3>();
+	//res.push_back(getBarycenter[points]); //envoie le barycentre si besoin
+	res.push_back(vec3(points[0].x, points[0].z+length, points[0].y));
+	res.push_back(vec3(points[points.size() - 1].x, points[points.size() - 1].z+length, points[points.size() - 1].y));
+	return res;
+}
+
+std::vector<vec3> Bezier::getFirstPointsFromRevolutionExtrude(std::vector<vec3> points, float step)
+{
+	std::vector<vec3> res = std::vector<vec3>();
+	for (int j = 0; j < 2 * PI; j += step) {
+		newPoints.push_back(vec3(points[0].x * cos(j + step), points[0].x*sin(j + step), points[0].y));
 	}
-	return triangleList;
+	return res;
+}
+
+std::vector<vec3> Bezier::getLastPointsFromRevolutionExtrude(std::vector<vec3> points, float step)
+{
+	std::vector<vec3> res = std::vector<vec3>();
+	for (int j = 0; j < 2 * PI; j += step) {
+		newPoints.push_back(vec3(points[points.size()-1].x * cos(j + step), points[points.size() - 1].x*sin(j + step), points[points.size() - 1].y));
+	}
+	return res;
+}
+
+vec3 Bezier::getBarycenter(std::vector<vec3> points)
+{
+	vec3 vecTotal;
+	for (int i = 0; i < points.size(); i++) {
+		vecTotal.x += points[i].x;
+		vecTotal.y += points[i].y;
+		vecTotal.z += points[i].z;
+	}
+	vecTotal /= points.size();
+	return vecTotal;
 }

@@ -36,15 +36,21 @@ public:
 
 	vec3 deBoor(int k, int degree, int i, float x, std::vector<float> knots, std::vector<vec3> ctrlPoints);
 
-	std::vector<vec3> simpleExtrude(std::vector<vec3> points, float length, float step);
+	std::vector<vec3> simpleExtrude(std::vector<vec3> points, float length, float step, float scale);
 
 	std::vector<vec3> revolutionExtrude(std::vector<vec3> points, float step, float radius);
 
 	std::vector<vec3> generalExtrude(std::vector<vec3> points, std::vector<vec3> linePoints, float step);
 
-	std::vector<int> getTriangleIndicesFrom3D(std::vector<vec3> points);
+	std::vector<vec3> getFirstPointsFromSimpleExtrude(std::vector<vec3> points, float length, float step, float scale);
 
-	std::vector<int> getSquareIndicesFrom3D(std::vector<vec3> points);
+	std::vector<vec3> getLastPointsFromSimpleExtrude(std::vector<vec3> points, float length, float step, float scale);
+
+	std::vector<vec3> getFirstPointsFromRevolutionExtrude(std::vector<vec3> points, float step);
+
+	std::vector<vec3> getLastPointsFromRevolutionExtrude(std::vector<vec3> points, float step);
+
+	vec3 getBarycenter(std::vector<vec3> points);
 
 };
 

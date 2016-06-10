@@ -210,7 +210,7 @@ void DrawRender()
 		{
 			if (curves[p].controlPoints.size() >= 4) {
 				curves[p].curvePoints = b.CasteljauBezier(curves[p].controlPoints, nStep, currentParameterSpace);
-				//curves[p].drawPoints = b.simpleExtrude(curves[p].curvePoints, 3, 1);
+				//curves[p].drawPoints = b.simpleExtrude(curves[p].curvePoints, 3, 1, 1);
 				curves[p].drawPoints = b.revolutionExtrude(curves[p].curvePoints, 0.1f, 3);
 			}
 
@@ -433,7 +433,7 @@ void DrawRender()
 		glColor3f(0.0f, 1.0f, 0.0f);
 		// Avec cette epaisseur de trait
 		glLineWidth(2.0f);
-		glBegin(GL_TRIANGLES);
+		glBegin(GL_QUADS);
 		for (int i = 0; i < curves[currentCurve].drawPoints.size(); i++) {
 				glVertex3f(curves[currentCurve].drawPoints[i].x, curves[currentCurve].drawPoints[i].y, curves[currentCurve].drawPoints[i].z);
 		}
