@@ -227,7 +227,8 @@ void DrawRender()
 				}
 				else
 				{
-
+					if(curves[p].soulPoints.size() > 0)
+						curves[p].drawPoints = b.generalExtrude(curves[p].curvePoints, curves[p].soulPoints, 1);
 				}
 			}
 

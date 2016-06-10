@@ -324,51 +324,45 @@ std::vector<vec3> Bezier::generalExtrude(std::vector<vec3> points, std::vector<v
 	vec3 vecTotal = vec3(0,0,0);
 
 	std::vector<int> indices; //indices en Quad
-	for (int i = 0; i < points.size(); i++) {
-		vecTotal.x += points[i].x;
-		vecTotal.y += points[i].y;
-		vecTotal.z += points[i].z;
-	}
-	vecTotal /= points.size();
 
-	vec3 difference = vec3(0,0,0);
-
-	if (linePoints.size() > 0) {
-		difference.x = vecTotal.x - linePoints[0].x;
-		difference.y = vecTotal.y - linePoints[0].y;
-		difference.z = vecTotal.z - linePoints[0].z;
-	}
-
-	for (int i = 0; i < linePoints.size(); i++) {
-		linePoints[i] += difference;
-		for (int j = 0; j < points.size(); j++) {
+	for (int i = 0; i < linePoints.size()-1; i++) {
+		//linePoints[i] += difference;
+		for (int j = 0; j < points.size()-1; j++) {
+			
 			if (i < 1) {
+				//
+				vec3 diff = linePoints[i + 1] - linePoints[i];
 				newPoints.push_back(vec3(points[j].x, points[j].y, points[j].z));
+
+				newPoints.push_back(points[j] + diff);
+
+				newPoints.push_back(points[j + 1] + diff);
+
+				newPoints.push_back(points[j + 1]);
+				
 			}
-			else if (i < linePoints.size() - 1) {
-				newPoints.push_back(vec3(points[j].x - (linePoints[i].x-linePoints[i-1].x), points[j].y - (linePoints[i].y - linePoints[i - 1].y), points[j].z - (linePoints[i].z - linePoints[i - 1].z)));
+			else {
+
+				vec3 diff = linePoints[i] - linePoints[i-1];
+				vec3 secDiff = linePoints[i+1] - linePoints[i];
+
+				std::cout << linePoints[i].x << ";" << linePoints[i].y << ";" << linePoints[i].z << std::endl;
+
+				newPoints.push_back(points[j] + diff);
+
+				newPoints.push_back(points[j] + secDiff);
+
+				newPoints.push_back(points[j + 1] + secDiff);
+
+				newPoints.push_back(points[j+1] + diff);
 			}
-			else
-			{
-				newPoints.push_back(vec3(points[j].x - (linePoints[i].x - linePoints[i - 1].x), points[j].y - (linePoints[i].y - linePoints[i - 1].y), points[j].z - (linePoints[i].z - linePoints[i - 1].z)));
-			}
+	
 			
 		}
 		
 	}
-	auto _size = points.size();
-	for (int i = 0; i < newPoints.size()-points.size(); i++) {
-		if (i%_size != 0) {
-			indices.push_back(i);
-			indices.push_back(i + 1);
-			indices.push_back(i + 1 + _size);
-			indices.push_back(i+_size);
-		}
-		
-	}
-	
 
-	return std::vector<vec3>();
+	return newPoints;
 }
 
 std::vector<vec3> Bezier::getFirstPointsFromSimpleExtrude(std::vector<vec3> points, float length, float step, float scale)
