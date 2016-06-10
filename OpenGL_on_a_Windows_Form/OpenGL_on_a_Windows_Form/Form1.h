@@ -309,14 +309,16 @@ namespace OpenGL_on_a_Windows_Form {
 				 // revolutionToolStripMenuItem
 				 // 
 				 this->revolutionToolStripMenuItem->Name = L"revolutionToolStripMenuItem";
-				 this->revolutionToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+				 this->revolutionToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 				 this->revolutionToolStripMenuItem->Text = L"Revolution";
+				 this->revolutionToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::revolutionToolStripMenuItem_Click);
 				 // 
 				 // generaliseeToolStripMenuItem
 				 // 
 				 this->generaliseeToolStripMenuItem->Name = L"generaliseeToolStripMenuItem";
-				 this->generaliseeToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+				 this->generaliseeToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 				 this->generaliseeToolStripMenuItem->Text = L"Generalisee";
+				 this->generaliseeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::generaliseeToolStripMenuItem_Click);
 				 // 
 				 // modeToolStripMenuItem
 				 // 
@@ -457,7 +459,7 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->extrusionTextBox->Name = L"extrusionTextBox";
 				 this->extrusionTextBox->Size = System::Drawing::Size(95, 20);
 				 this->extrusionTextBox->TabIndex = 5;
-				 this->extrusionTextBox->Text = L"1";
+				 this->extrusionTextBox->Text = L"0.5";
 				 this->extrusionTextBox->TextChanged += gcnew System::EventHandler(this, &Form1::extrusionTextBox_TextChanged);
 				 // 
 				 // extrusionScaleTextBox
@@ -467,6 +469,7 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->extrusionScaleTextBox->Size = System::Drawing::Size(95, 20);
 				 this->extrusionScaleTextBox->TabIndex = 7;
 				 this->extrusionScaleTextBox->Text = L"1";
+				 this->extrusionScaleTextBox->TextChanged += gcnew System::EventHandler(this, &Form1::extrusionScaleTextBox_TextChanged);
 				 // 
 				 // label2
 				 // 
@@ -606,9 +609,28 @@ private: System::Void instructToolStripMenuItem_Click(System::Object^  sender, S
 	{
 	}
 }
-private: System::Void extrusionTextBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		 private: System::Void extrusionTextBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if (extrusionTextBox->Text != "") {
+				 double z = 1.0;
+				 if (Double::TryParse(extrusionTextBox->Text, z))
+					 OpenGL->UpdateExtrudeSimpleLenght(z);
+			 }
+		 }
+	private: System::Void extrusionScaleTextBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		if (extrusionScaleTextBox->Text != "") {
+			double z = 1.0;
+			if (Double::TryParse(extrusionScaleTextBox->Text, z))
+				OpenGL->UpdateExtrudeSimpleScale(z-1);
+		}
+	}
+			 private: System::Void simpleToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+				 OpenGL->UpdateExtruder(0);
+			 }
+private: System::Void revolutionToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL->UpdateExtruder(1);
 }
-private: System::Void simpleToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+private: System::Void generaliseeToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	OpenGL->UpdateExtruder(2);
 }
 };
 }

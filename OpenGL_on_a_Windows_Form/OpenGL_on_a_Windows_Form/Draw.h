@@ -67,4 +67,6 @@ void render_menu(int option);
 void textures_menu(int option);
 void polyMade_menu(int option);
 void option_menu(int option);
-
+void option_lenght(double v);
+void option_scale(double v);
+void  extruder_menu(int v);

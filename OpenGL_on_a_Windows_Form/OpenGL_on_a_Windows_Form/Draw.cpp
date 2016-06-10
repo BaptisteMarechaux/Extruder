@@ -112,6 +112,11 @@ GLuint ListeTextures[4];
 
 int renderType = 0, textureIndex = 0;
 
+double extrudeSimpleScale=0.5;
+double extrudeSimpleLenght=1.0;
+
+int extrudeType = 0;
+
 void setDim(int _w, int _h) {
 	w = _w;
 	h = _h;
@@ -211,8 +216,19 @@ void DrawRender()
 		{
 			if (curves[p].controlPoints.size() >= 4) {
 				curves[p].curvePoints = b.CasteljauBezier(curves[p].controlPoints, nStep, currentParameterSpace);
-				curves[p].drawPoints = b.simpleExtrude(curves[p].curvePoints, 3, 1, 2);
-				//curves[p].drawPoints = b.revolutionExtrude(curves[p].curvePoints, 0.1f, 3);
+				if (extrudeType == 0) {
+					curves[p].drawPoints = b.simpleExtrude(curves[p].curvePoints, extrudeSimpleLenght, 1, extrudeSimpleScale);
+					for (size_t i = 0; i < curves[p].drawPoints.size(); i++)
+					{
+						curves[p].texCoordsPoints.push_back(vec2(curves[p].drawPoints[i].x, curves[p].drawPoints[i].y));
+					}
+				}else if (extrudeType == 1) {
+					curves[p].drawPoints = b.revolutionExtrude(curves[p].curvePoints, 0.1f, 3);
+				}
+				else
+				{
+
+				}
 			}
 
 			if (curves[p].soulControlPoints.size() >= 4) {
@@ -439,6 +455,18 @@ void DrawRender()
 				glVertex3f(curves[currentCurve].drawPoints[i].x, curves[currentCurve].drawPoints[i].y, curves[currentCurve].drawPoints[i].z);
 		}
 		glEnd();
+		/*if (curves[currentCurve].curvePoints.size() > 4) {
+			std::vector<vec3> res = std::vector<vec3>();
+			res = b.getLastPointsFromSimpleExtrude(curves[currentCurve].curvePoints, extrudeSimpleLenght, 1, extrudeSimpleScale);
+			//curves[p].drawPoints = b.simpleExtrude(curves[p].curvePoints, extrudeSimpleLenght, 1, extrudeSimpleScale);
+			glBegin(GL_TRIANGLE_FAN); {
+				for (int i = 0; i < res.size(); i++) {
+					glVertex3f(res[i].x, res[i].y, res[i].z);
+				}
+			}
+			glEnd();
+		}*/
+
 		glLineWidth(1.0f);
 		//glDisable(GL_POLYGON_OFFSET_LINE);
 		// On passe en mode face
@@ -594,9 +622,9 @@ void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs
 			//draw::z_direction = -cos(draw::camAngle);
 
 			if ((e->Y - oldMousey) > 0)             // mouse moved to the right
-				draw::camAngle += 0.005f;
+				draw::camAngle += 0.01f;
 			else if ((e->Y - oldMousey) < 0)     // mouse moved to the left
-				draw::camAngle -= 0.005f;
+				draw::camAngle -= 0.01f;
 		}
 		if (e->X != oldMousex)
 		{
@@ -606,9 +634,9 @@ void mouseMotion(System::Object^  sender, System::Windows::Forms::MouseEventArgs
 			draw::z_direction = -sin(draw::camAngle);
 
 			if ((e->X - oldMousex) > 0)             // mouse moved to the right
-			draw::camAngle += 0.005f;
+			draw::camAngle += 0.01f;
 			else if ((e->X - oldMousex) < 0)     // mouse moved to the left
-			draw::camAngle -= 0.005f;
+			draw::camAngle -= 0.01f;
 
 		}
 
@@ -1030,6 +1058,16 @@ void option_menu(int option) {
 		showCredits = !showCredits;
 		break;
 	}
+}
+
+void option_lenght(double v) {
+	extrudeSimpleLenght = v;
+}
+void  option_scale(double v) {
+	extrudeSimpleScale = v;
+}
+void  extruder_menu(int v) {
+	extrudeType = v;
 }
 
 // Initialise le menu

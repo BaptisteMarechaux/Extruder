@@ -311,6 +311,16 @@ namespace OpenGLForm
 		void UpdateOptions(int v) {
 			option_menu(v);
 		}
+		void UpdateExtrudeSimpleLenght(double v) {
+			option_lenght(v);
+		}
+		void UpdateExtrudeSimpleScale(double v) {
+			option_scale(v);
+		}
+
+		void  UpdateExtruder(int v) {
+			extruder_menu(v);
+		}
 
 	};
 }

@@ -285,8 +285,8 @@ std::vector<vec3> Bezier::simpleExtrude(std::vector<vec3> points, float length, 
 	for (int i = 0; i < points.size()-1; i++) {
 		newPoints.push_back(vec3(points[i].x, points[i].z, points[i].y));
 		newPoints.push_back(vec3(points[i+1].x, points[i+1].z, points[i+1].y));
-		newPoints.push_back(vec3(points[i+1].x + scale*(points[i + 1].x -bar.x), points[i+1].z + length, points[i+1].y + scale*(points[i + 1].y - bar.y)));
-		newPoints.push_back(vec3(points[i].x + scale*(points[i].x - bar.x), points[i].z + length, points[i].y + scale*(points[i].y - bar.y) ));
+		newPoints.push_back(vec3(points[i + 1].x + scale*(points[i + 1].x - bar.x), points[i + 1].z + length, points[i + 1].y + scale*(points[i + 1].y - bar.y)));
+		newPoints.push_back(vec3(points[i].x + scale*(points[i].x - bar.x), points[i].z + length, points[i].y + scale*(points[i].y - bar.y)));
 	}
 
 	return newPoints;
@@ -382,11 +382,28 @@ std::vector<vec3> Bezier::getFirstPointsFromSimpleExtrude(std::vector<vec3> poin
 
 std::vector<vec3> Bezier::getLastPointsFromSimpleExtrude(std::vector<vec3> points, float length, float step, float scale)
 {
-	std::vector<vec3> res = std::vector<vec3>();
+	/*std::vector<vec3> res = std::vector<vec3>();
 	//res.push_back(getBarycenter[points]); //envoie le barycentre si besoin
 	res.push_back(vec3(points[0].x, points[0].z+length, points[0].y));
 	res.push_back(vec3(points[points.size() - 1].x, points[points.size() - 1].z+length, points[points.size() - 1].y));
-	return res;
+	return res;*/
+
+	last2DCurvePointsCount = points.size();
+	std::vector<vec3> newPoints = std::vector<vec3>();
+	vec3 bar = getBarycenter(points);
+	std::vector<vec3> s = std::vector<vec3>();
+	for (int i = 0; i < points.size() - 1; i++) {
+		s.push_back(vec3(points[i + 1].x + scale*(points[i + 1].x - bar.x), points[i + 1].z + length, points[i + 1].y + scale*(points[i + 1].y - bar.y)));
+		s.push_back(vec3(points[i].x + scale*(points[i].x - bar.x), points[i].z + length, points[i].y + scale*(points[i].y - bar.y)));
+	}
+	newPoints.push_back(getBarycenter(s));
+	std::vector<int> indices;
+	for (int i = 0; i < points.size() - 1; i++) {
+		newPoints.push_back(vec3(points[i].x + scale*(points[i].x - bar.x), points[i].z + length, points[i].y + scale*(points[i].y - bar.y)));
+		newPoints.push_back(vec3(points[i + 1].x + scale*(points[i + 1].x - bar.x), points[i + 1].z + length, points[i + 1].y + scale*(points[i + 1].y - bar.y)));
+	}
+
+	return newPoints;
 }
 
 std::vector<vec3> Bezier::getFirstPointsFromRevolutionExtrude(std::vector<vec3> points, float step)
