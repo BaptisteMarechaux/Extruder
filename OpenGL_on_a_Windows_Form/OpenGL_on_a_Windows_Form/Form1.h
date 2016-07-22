@@ -302,21 +302,21 @@ namespace OpenGL_on_a_Windows_Form {
 				 // simpleToolStripMenuItem
 				 // 
 				 this->simpleToolStripMenuItem->Name = L"simpleToolStripMenuItem";
-				 this->simpleToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->simpleToolStripMenuItem->Size = System::Drawing::Size(134, 22);
 				 this->simpleToolStripMenuItem->Text = L"Simple";
 				 this->simpleToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::simpleToolStripMenuItem_Click);
 				 // 
 				 // revolutionToolStripMenuItem
 				 // 
 				 this->revolutionToolStripMenuItem->Name = L"revolutionToolStripMenuItem";
-				 this->revolutionToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->revolutionToolStripMenuItem->Size = System::Drawing::Size(134, 22);
 				 this->revolutionToolStripMenuItem->Text = L"Revolution";
 				 this->revolutionToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::revolutionToolStripMenuItem_Click);
 				 // 
 				 // generaliseeToolStripMenuItem
 				 // 
 				 this->generaliseeToolStripMenuItem->Name = L"generaliseeToolStripMenuItem";
-				 this->generaliseeToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+				 this->generaliseeToolStripMenuItem->Size = System::Drawing::Size(134, 22);
 				 this->generaliseeToolStripMenuItem->Text = L"Generalisee";
 				 this->generaliseeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::generaliseeToolStripMenuItem_Click);
 				 // 
@@ -459,7 +459,7 @@ namespace OpenGL_on_a_Windows_Form {
 				 this->extrusionTextBox->Name = L"extrusionTextBox";
 				 this->extrusionTextBox->Size = System::Drawing::Size(95, 20);
 				 this->extrusionTextBox->TabIndex = 5;
-				 this->extrusionTextBox->Text = L"0.5";
+				 this->extrusionTextBox->Text = L"0,5";
 				 this->extrusionTextBox->TextChanged += gcnew System::EventHandler(this, &Form1::extrusionTextBox_TextChanged);
 				 // 
 				 // extrusionScaleTextBox
